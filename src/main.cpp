@@ -1,24 +1,21 @@
-#include <print>
-
 #include <boost/process.hpp>
-#include <CLI/CLI.hpp>
 
-namespace proc = boost::process;
-namespace env = proc::environment;
+#include "cli.hpp"
+#include "unix_toolchain.hpp"
 
 int main(int argc, char** argv) {
-  CLI::App app{"buildxx"};
-  argv = app.ensure_utf8(argv);
+  using namespace bxx;
 
-  std::string file;
-  app.add_option("file", file, "File to compile")->required();
+  // 1. parse cli args
+  cli app;
   CLI11_PARSE(app, argc, argv);
 
-  auto cxx = env::find_executable("g++");
-  std::println("Found compiler {}", cxx.string());
+  // 2. detect tool chain
+  auto gnu = tc::unix_toolchain{};
 
-  boost::asio::io_context ctx;
-  proc::process proc(ctx, cxx, { file });
+  // 3. compile
+  asio::io_context ctx;
+  proc::process proc(ctx, gnu.cxx(), { app.build_file() });
   proc.wait();
 
   return 0;
