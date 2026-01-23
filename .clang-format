@@ -1,8 +1,9 @@
 ---
-Language:        Cpp
-BasedOnStyle:    llvm
+Language: Cpp
+BasedOnStyle: llvm
 BreakConstructorInitializers: BeforeComma
 PointerAlignment: Left
 BinPackParameters: OnePerLine
+BreakBeforeBinaryOperators: NonAssignment
 ...
 
