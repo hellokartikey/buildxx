@@ -24,11 +24,8 @@ int main(int argc, char** argv) {
 void bxx::build(std::shared_ptr<ctx> b) {
   auto test = b->sub_directory("test");
 
-  auto echo = b
-    ->add_command("echo")
-    ->add_option("Hello from build++")
-    ->install()
-    ;
+  auto echo =
+      b->add_command("echo")->add_option("Hello from build++")->install();
 
   // auto compile = ctx
   //   .add_step(ctx.toolchain().cxx())

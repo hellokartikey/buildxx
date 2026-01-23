@@ -40,7 +40,8 @@ toolchain& toolchain::add_ld_options(std::vector<std::string> opts) {
   return *this;
 }
 
-std::vector<std::string> toolchain::cxx_options(std::vector<std::string> extra_opts) const {
+std::vector<std::string>
+toolchain::cxx_options(std::vector<std::string> extra_opts) const {
   auto copy = m_cxx_opts;
 
   for (auto& opt : extra_opts) {
@@ -50,7 +51,8 @@ std::vector<std::string> toolchain::cxx_options(std::vector<std::string> extra_o
   return copy;
 }
 
-std::vector<std::string> toolchain::cc_options(std::vector<std::string> extra_opts) const {
+std::vector<std::string>
+toolchain::cc_options(std::vector<std::string> extra_opts) const {
   auto copy = m_cc_opts;
 
   for (auto& opt : extra_opts) {
@@ -60,7 +62,8 @@ std::vector<std::string> toolchain::cc_options(std::vector<std::string> extra_op
   return copy;
 }
 
-std::vector<std::string> toolchain::ld_options(std::vector<std::string> extra_opts) const {
+std::vector<std::string>
+toolchain::ld_options(std::vector<std::string> extra_opts) const {
   auto copy = m_ld_opts;
 
   for (auto& opt : extra_opts) {
@@ -69,4 +72,4 @@ std::vector<std::string> toolchain::ld_options(std::vector<std::string> extra_op
 
   return copy;
 }
-}
+} // namespace bxx

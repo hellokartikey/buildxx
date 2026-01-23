@@ -1,9 +1,8 @@
 #ifndef HK_BUILDXX_CLI_HPP
 #define HK_BUILDXX_CLI_HPP
 
-#include <memory>
-
 #include <CLI/CLI.hpp>
+#include <memory>
 
 #include "ctx.hpp"
 
@@ -31,6 +30,6 @@ private:
 
   bool m_ok = true;
 };
-}
+} // namespace bxx
 
 #endif

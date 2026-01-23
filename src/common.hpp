@@ -1,8 +1,8 @@
 #ifndef HK_BUILDXX_COMMON_HPP
 #define HK_BUILDXX_COMMON_HPP
 
-#include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/process.hpp>
 
 namespace asio = boost::asio;

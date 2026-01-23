@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "command.hpp"
-#include "toolchain.hpp"
 #include "step.hpp"
+#include "toolchain.hpp"
 
 namespace bxx {
 class cli;
@@ -31,20 +31,15 @@ public:
 
   fs::path sub_directory(std::string dir) const;
 
-  std::shared_ptr<command> add_command(
-    std::string exe,
-    step::arguments args = {},
-    step::environment env = {}
-  );
+  std::shared_ptr<command> add_command(std::string exe,
+                                       step::arguments args = {},
+                                       step::environment env = {});
 
 private:
   std::shared_ptr<ctx> build();
 
-  std::shared_ptr<step> add_step(
-    fs::path exe,
-    step::arguments args = {},
-    step::environment env = {}
-  );
+  std::shared_ptr<step>
+  add_step(fs::path exe, step::arguments args = {}, step::environment env = {});
 
   void install_step(std::shared_ptr<step> step);
 
@@ -57,6 +52,6 @@ private:
   std::vector<std::shared_ptr<step>> m_steps;
   std::vector<std::shared_ptr<step>> m_install;
 };
-}
+} // namespace bxx
 
 #endif

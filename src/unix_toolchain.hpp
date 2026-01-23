@@ -19,4 +19,4 @@ private:
   fs::path m_cxx;
   fs::path m_ld;
 };
-}
+} // namespace bxx

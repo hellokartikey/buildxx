@@ -3,24 +3,19 @@
 #include "ctx.hpp"
 
 namespace bxx {
-command::command(
-    private_tag,
-    std::shared_ptr<ctx> ctx,
-    std::string exe,
-    step::arguments args,
-    step::environment env
-  )
-  : target(target::private_tag{}, exe)
-  , m_ctx(ctx)
-  , m_step(ctx->add_step(env::find_executable(exe), args, env))
-  {}
+command::command(private_tag,
+                 std::shared_ptr<ctx> ctx,
+                 std::string exe,
+                 step::arguments args,
+                 step::environment env)
+    : target(target::private_tag{}, exe)
+    , m_ctx(ctx)
+    , m_step(ctx->add_step(env::find_executable(exe), args, env)) {}
 
-std::shared_ptr<command> command::create(
-  std::shared_ptr<ctx> ctx,
-  std::string exe,
-  step::arguments args,
-  step::environment env
-) {
+std::shared_ptr<command> command::create(std::shared_ptr<ctx> ctx,
+                                         std::string exe,
+                                         step::arguments args,
+                                         step::environment env) {
   return std::make_shared<command>(private_tag{}, ctx, exe, args, env);
 }
 
@@ -51,4 +46,4 @@ std::shared_ptr<command> command::add_env(env::key key, env::value value) {
   m_step->add_env(key, value);
   return get();
 }
-}
+} // namespace bxx

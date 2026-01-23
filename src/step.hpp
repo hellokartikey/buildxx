@@ -1,8 +1,8 @@
 #ifndef HK_BUILDXX_STEP_HPP
 #define HK_BUILDXX_STEP_HPP
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "common.hpp"
@@ -21,22 +21,18 @@ public:
   // posix exit code is 8bit unsigned
   static constexpr int RC_NOT_EXEC = 256;
 
-  step(
-    private_tag,
-    std::shared_ptr<ctx> ctx,
-    fs::path exe,
-    arguments args = {},
-    environment env = {}
-  );
+  step(private_tag,
+       std::shared_ptr<ctx> ctx,
+       fs::path exe,
+       arguments args = {},
+       environment env = {});
 
   ~step() = default;
 
-  static std::shared_ptr<step> create(
-    std::shared_ptr<ctx> ctx,
-    fs::path exe,
-    arguments args = {},
-    environment env = {}
-  );
+  static std::shared_ptr<step> create(std::shared_ptr<ctx> ctx,
+                                      fs::path exe,
+                                      arguments args = {},
+                                      environment env = {});
 
   std::shared_ptr<step> get();
 
@@ -70,6 +66,6 @@ private:
 
   std::vector<std::shared_ptr<step>> m_pre;
 };
-}
+} // namespace bxx
 
 #endif

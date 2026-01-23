@@ -21,15 +21,18 @@ public:
   toolchain& add_cc_options(std::vector<std::string> opts);
   toolchain& add_ld_options(std::vector<std::string> opts);
 
-  std::vector<std::string> cxx_options(std::vector<std::string> extra_opts) const;
-  std::vector<std::string> cc_options(std::vector<std::string> extra_opts) const;
-  std::vector<std::string> ld_options(std::vector<std::string> extra_opts) const;
+  std::vector<std::string>
+  cxx_options(std::vector<std::string> extra_opts) const;
+  std::vector<std::string>
+  cc_options(std::vector<std::string> extra_opts) const;
+  std::vector<std::string>
+  ld_options(std::vector<std::string> extra_opts) const;
 
 private:
   std::vector<std::string> m_cxx_opts;
   std::vector<std::string> m_cc_opts;
   std::vector<std::string> m_ld_opts;
 };
-}
+} // namespace bxx
 
 #endif

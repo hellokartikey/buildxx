@@ -10,10 +10,9 @@ class target : public std::enable_shared_from_this<target> {
 protected:
   struct private_tag {};
 
-  template <class T>
-  std::shared_ptr<T> build_pre(this T& self, toolchain& tc) {
+  template <class T> std::shared_ptr<T> build_pre(this T& self, toolchain& tc) {
     for (auto pre : self.m_pre) {
-      if (! pre->is_built()) {
+      if (!pre->is_built()) {
         pre->build(tc);
       }
     }
@@ -21,8 +20,7 @@ protected:
     return self.get();
   }
 
-  template <class T>
-  std::shared_ptr<T> get(this T& self) {
+  template <class T> std::shared_ptr<T> get(this T& self) {
     return std::static_pointer_cast<T>(self.shared_from_this());
   }
 
@@ -54,6 +52,6 @@ private:
   bool m_built = false;
   bool m_installed = false;
 };
-}
+} // namespace bxx
 
 #endif

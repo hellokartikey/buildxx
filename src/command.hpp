@@ -1,8 +1,8 @@
 #ifndef HK_BUILDXX_COMMAND_HPP
 #define HK_BUILDXX_COMMAND_HPP
 
-#include "target.hpp"
 #include "step.hpp"
+#include "target.hpp"
 
 namespace bxx {
 class ctx;
@@ -12,22 +12,18 @@ protected:
   struct private_tag {};
 
 public:
-  command(
-    private_tag,
-    std::shared_ptr<ctx> ctx,
-    std::string exe,
-    step::arguments args = {},
-    step::environment env = {}
-  );
+  command(private_tag,
+          std::shared_ptr<ctx> ctx,
+          std::string exe,
+          step::arguments args = {},
+          step::environment env = {});
 
   ~command() override = default;
 
-  static std::shared_ptr<command> create(
-    std::shared_ptr<ctx> ctx,
-    std::string exe,
-    step::arguments args = {},
-    step::environment env = {}
-  );
+  static std::shared_ptr<command> create(std::shared_ptr<ctx> ctx,
+                                         std::string exe,
+                                         step::arguments args = {},
+                                         step::environment env = {});
 
   std::shared_ptr<target> install() override;
 
@@ -45,6 +41,6 @@ private:
   std::shared_ptr<ctx> m_ctx;
   std::shared_ptr<step> m_step;
 };
-}
+} // namespace bxx
 
 #endif
