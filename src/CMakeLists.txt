@@ -3,6 +3,8 @@ add_executable(buildxx main.cpp)
 target_sources(buildxx
 PRIVATE
   cli.cpp
+  ctx.cpp
+  step.cpp
   toolchain.cpp
   unix_toolchain.cpp
 )

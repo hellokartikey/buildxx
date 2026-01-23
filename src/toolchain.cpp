@@ -1,6 +1,6 @@
 #include "toolchain.hpp"
 
-namespace bxx::tc {
+namespace bxx {
 toolchain& toolchain::add_cxx_option(std::string opt) {
   m_cxx_opts.emplace_back(std::move(opt));
   return *this;

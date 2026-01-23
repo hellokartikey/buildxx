@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 
-namespace bxx::tc {
+namespace bxx {
 class toolchain {
 public:
   toolchain() = default;

@@ -4,7 +4,7 @@
 
 using namespace std::literals;
 
-namespace bxx::tc {
+namespace bxx {
 class unix_toolchain : public toolchain {
 public:
   unix_toolchain(std::string prefix = ""s);

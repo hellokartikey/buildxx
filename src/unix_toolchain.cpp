@@ -1,6 +1,6 @@
 #include "unix_toolchain.hpp"
 
-namespace bxx::tc {
+namespace bxx {
 unix_toolchain::unix_toolchain(std::string prefix) {
   m_cxx = env::find_executable(prefix + "c++");
   m_cc = env::find_executable(prefix + "cc");

@@ -1,6 +1,6 @@
 #include "cli.hpp"
 
-namespace bxx::cli {
+namespace bxx {
 cli::cli() {
   m_app.add_option("file", m_build_file, "Build description")->required();
 }
