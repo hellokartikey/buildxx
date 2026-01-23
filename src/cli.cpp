@@ -1,7 +1,7 @@
 #include "cli.hpp"
 
 namespace bxx {
-cli::cli() {
+cli::cli() : m_ctx(ctx::create()) {
   m_app.add_option("file", m_build_file, "Build description")->required();
 }
 
