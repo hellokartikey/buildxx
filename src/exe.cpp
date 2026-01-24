@@ -5,10 +5,7 @@
 #include "ctx.hpp"
 
 namespace bxx {
-exe::exe(private_tag,
-         std::shared_ptr<ctx> ctx,
-         std::string name,
-         fs::path entry)
+exe::exe(private_tag, ptr<ctx> ctx, std::string name, fs::path entry)
     : target(private_tag{}, name)
     , m_ctx(ctx) {
   m_link = m_ctx->add_step(m_ctx->tc()->cxx())
@@ -18,19 +15,17 @@ exe::exe(private_tag,
   add_entry(entry);
 }
 
-std::shared_ptr<exe>
-exe::create(std::shared_ptr<ctx> ctx, std::string name, fs::path entry) {
+ptr<exe> exe::create(ptr<ctx> ctx, std::string name, fs::path entry) {
   return std::make_shared<exe>(private_tag{}, ctx, std::move(name),
                                std::move(entry));
 }
 
-std::shared_ptr<exe> exe::add_src(fs::path src) {
+ptr<exe> exe::add_src(fs::path src) {
   add_entry(src);
   return get();
 }
 
-std::shared_ptr<exe> exe::add_src(fs::path prefix,
-                                  std::vector<std::string> files) {
+ptr<exe> exe::add_src(fs::path prefix, std::vector<std::string> files) {
   for (auto& file : files) {
     add_src(prefix / file);
   }
@@ -38,7 +33,7 @@ std::shared_ptr<exe> exe::add_src(fs::path prefix,
   return get();
 }
 
-std::shared_ptr<target> exe::install() {
+ptr<target> exe::install() {
   target::install();
   m_link->install();
   return get();

@@ -4,19 +4,19 @@ namespace bxx {
 target::target(private_tag, std::string name)
     : m_name(name) {}
 
-std::shared_ptr<target> target::create(std::string name) {
+ptr<target> target::create(std::string name) {
   return std::make_shared<target>(private_tag{}, name);
 }
 
 const std::string& target::name() const { return m_name; }
 
-std::shared_ptr<target> target::build() {
+ptr<target> target::build() {
   build_pre();
   m_built = true;
   return get();
 }
 
-std::shared_ptr<target> target::install() {
+ptr<target> target::install() {
   for (auto tar : m_pre) {
     tar->install();
   }

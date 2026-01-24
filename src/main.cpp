@@ -4,7 +4,7 @@
 #include "ctx.hpp"
 
 namespace bxx {
-void build(std::shared_ptr<ctx> ctx);
+void build(ptr<ctx> b);
 }
 
 int main(int argc, char** argv) {
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 }
 
 // clang-format off
-void bxx::build(std::shared_ptr<ctx> b) {
+void bxx::build(ptr<ctx> b) {
   auto test = b->sub_dir("test");
 
   auto echo = b
@@ -35,7 +35,7 @@ void bxx::build(std::shared_ptr<ctx> b) {
     ;
 
   auto app = b
-    ->add_exe("test_app", test / "main.cpp", lang::cxx)
+    ->add_exe("test_app", test / "main.cpp")
     ->depends_on(echo)
     ->install()
     ;

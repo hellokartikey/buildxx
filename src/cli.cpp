@@ -6,11 +6,9 @@ cli::cli(private_tag) {
   m_app.add_flag("-v", m_verbose, "Verbose output")->default_val(false);
 }
 
-std::shared_ptr<cli> cli::create() {
-  return std::make_shared<cli>(private_tag{});
-}
+ptr<cli> cli::create() { return std::make_shared<cli>(private_tag{}); }
 
-std::shared_ptr<cli> cli::get() { return shared_from_this(); }
+ptr<cli> cli::get() { return shared_from_this(); }
 
 bool cli::is_verbose() const { return m_verbose; }
 

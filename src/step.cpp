@@ -6,28 +6,26 @@
 #include "ctx.hpp"
 
 namespace bxx {
-step::step(
-    private_tag, std::shared_ptr<ctx> ctx, fs::path exe, argv args, env_map env)
+step::step(private_tag, ptr<ctx> ctx, fs::path exe, argv args, env_map env)
     : m_ctx(ctx)
     , m_exe(exe)
     , m_args(args)
     , m_env(env) {}
 
-std::shared_ptr<step>
-step::create(std::shared_ptr<ctx> ctx, fs::path exe, argv args, env_map env) {
+ptr<step> step::create(ptr<ctx> ctx, fs::path exe, argv args, env_map env) {
   return std::make_shared<step>(private_tag{}, ctx, exe, args, env);
 }
 
-std::shared_ptr<step> step::get() { return shared_from_this(); }
+ptr<step> step::get() { return shared_from_this(); }
 
 const step::argv& step::opts() const { return m_args; }
 
-std::shared_ptr<step> step::add_opt(std::string opt) {
+ptr<step> step::add_opt(std::string opt) {
   m_args.emplace_back(std::move(opt));
   return get();
 }
 
-std::shared_ptr<step> step::add_opt(argv opts) {
+ptr<step> step::add_opt(argv opts) {
   for (auto& opt : opts) {
     add_opt(std::move(opt));
   }
@@ -37,17 +35,17 @@ std::shared_ptr<step> step::add_opt(argv opts) {
 
 const step::env_map& step::env() const { return m_env; }
 
-std::shared_ptr<step> step::add_env(env::key k, env::value v) {
+ptr<step> step::add_env(env::key k, env::value v) {
   m_env[k] = v;
   return get();
 }
 
-std::shared_ptr<step> step::depends_on(std::shared_ptr<step> other) {
+ptr<step> step::depends_on(ptr<step> other) {
   m_pre.push_back(other);
   return get();
 }
 
-std::shared_ptr<step> step::install() {
+ptr<step> step::install() {
   m_ctx->install_step(get());
   return get();
 }

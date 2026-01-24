@@ -17,20 +17,20 @@ public:
   virtual const fs::path& cc() const = 0;
   virtual const fs::path& ld() const = 0;
 
-  std::shared_ptr<tc> add_cxx_opt(std::string opt);
-  std::shared_ptr<tc> add_cc_opt(std::string opt);
-  std::shared_ptr<tc> add_ld_opt(std::string opt);
+  ptr<tc> add_cxx_opt(std::string opt);
+  ptr<tc> add_cc_opt(std::string opt);
+  ptr<tc> add_ld_opt(std::string opt);
 
-  std::shared_ptr<tc> add_cxx_opt(std::vector<std::string> opts);
-  std::shared_ptr<tc> add_cc_opt(std::vector<std::string> opts);
-  std::shared_ptr<tc> add_ld_opt(std::vector<std::string> opts);
+  ptr<tc> add_cxx_opt(std::vector<std::string> opts);
+  ptr<tc> add_cc_opt(std::vector<std::string> opts);
+  ptr<tc> add_ld_opt(std::vector<std::string> opts);
 
   std::vector<std::string> cxx_opts(std::vector<std::string> opts = {}) const;
   std::vector<std::string> cc_opts(std::vector<std::string> opts = {}) const;
   std::vector<std::string> ld_opts(std::vector<std::string> opts = {}) const;
 
 private:
-  template <class T> std::shared_ptr<T> get(this T& self) {
+  template <class T> ptr<T> get(this T& self) {
     return self.shared_from_this();
   }
 

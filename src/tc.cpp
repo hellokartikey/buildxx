@@ -1,22 +1,22 @@
 #include "tc.hpp"
 
 namespace bxx {
-std::shared_ptr<tc> tc::add_cxx_opt(std::string opt) {
+ptr<tc> tc::add_cxx_opt(std::string opt) {
   m_cxx_opts.emplace_back(std::move(opt));
   return get();
 }
 
-std::shared_ptr<tc> tc::add_cc_opt(std::string opt) {
+ptr<tc> tc::add_cc_opt(std::string opt) {
   m_cc_opts.emplace_back(std::move(opt));
   return get();
 }
 
-std::shared_ptr<tc> tc::add_ld_opt(std::string opt) {
+ptr<tc> tc::add_ld_opt(std::string opt) {
   m_ld_opts.emplace_back(std::move(opt));
   return get();
 }
 
-std::shared_ptr<tc> tc::add_cxx_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_cxx_opt(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_cxx_opt(std::move(opt));
   }
@@ -24,7 +24,7 @@ std::shared_ptr<tc> tc::add_cxx_opt(std::vector<std::string> opts) {
   return get();
 }
 
-std::shared_ptr<tc> tc::add_cc_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_cc_opt(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_cc_opt(std::move(opt));
   }
@@ -32,7 +32,7 @@ std::shared_ptr<tc> tc::add_cc_opt(std::vector<std::string> opts) {
   return get();
 }
 
-std::shared_ptr<tc> tc::add_ld_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_ld_opt(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_ld_opt(std::move(opt));
   }

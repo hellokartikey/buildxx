@@ -5,6 +5,8 @@
 
 #include <CLI/CLI.hpp>
 
+#include "common.hpp"
+
 int main(int, char**);
 
 namespace bxx {
@@ -15,7 +17,7 @@ public:
   cli(private_tag);
   ~cli() = default;
 
-  std::shared_ptr<cli> get();
+  ptr<cli> get();
 
   bool is_verbose() const;
   const std::string& build_file() const;
@@ -23,7 +25,7 @@ public:
 private: // for friends
   friend int ::main(int, char**);
 
-  static std::shared_ptr<cli> create();
+  static ptr<cli> create();
 
   void parse(int argc, char** argv);
   int exit(const CLI::ParseError& e);

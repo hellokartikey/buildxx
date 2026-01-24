@@ -8,7 +8,7 @@ tc_unix::tc_unix(private_tag, std::string prefix)
   m_ld = env::find_executable(prefix + "ld");
 }
 
-std::shared_ptr<tc_unix> tc_unix::create(std::string prefix) {
+ptr<tc_unix> tc_unix::create(std::string prefix) {
   return std::make_shared<tc_unix>(private_tag{}, prefix);
 }
 } // namespace bxx

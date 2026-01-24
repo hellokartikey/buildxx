@@ -7,16 +7,16 @@
 #include "tc_unix.hpp"
 
 namespace bxx {
-ctx::ctx(private_tag, std::shared_ptr<bxx::cli> cli)
+ctx::ctx(private_tag, ptr<bxx::cli> cli)
     : m_app(cli)
     , m_tc(tc_unix::create())
     , m_io(std::make_shared<asio::io_context>()) {}
 
-std::shared_ptr<ctx> ctx::create(std::shared_ptr<bxx::cli> cli) {
+ptr<ctx> ctx::create(ptr<bxx::cli> cli) {
   return std::make_shared<ctx>(ctx::private_tag{}, cli);
 }
 
-std::shared_ptr<ctx> ctx::get() { return shared_from_this(); }
+ptr<ctx> ctx::get() { return shared_from_this(); }
 
 fs::path ctx::dir() const { return fs::current_path(); }
 
@@ -54,27 +54,25 @@ fs::path ctx::cache() const {
   return path;
 }
 
-std::shared_ptr<cli> ctx::cli() { return m_app; }
+ptr<cli> ctx::cli() { return m_app; }
 
-std::shared_ptr<tc> ctx::tc() { return m_tc; }
+ptr<tc> ctx::tc() { return m_tc; }
 
-std::shared_ptr<asio::io_context> ctx::exec() { return m_io; }
+ptr<asio::io_context> ctx::exec() { return m_io; }
 
-std::shared_ptr<cmd>
-ctx::add_cmd(std::string exe, step::argv args, step::env_map env) {
+ptr<cmd> ctx::add_cmd(std::string exe, step::argv args, step::env_map env) {
   auto ptr = cmd::create(get(), exe, args, env);
   m_targets.emplace_back(ptr);
   return ptr;
 }
 
-std::shared_ptr<exe> ctx::add_exe(std::string bin, fs::path entry) {
+ptr<exe> ctx::add_exe(std::string bin, fs::path entry) {
   auto ptr = exe::create(get(), bin, entry);
   m_targets.emplace_back(ptr);
   return ptr;
 }
 
-std::shared_ptr<step>
-ctx::add_step(fs::path exe, step::argv args, step::env_map env) {
+ptr<step> ctx::add_step(fs::path exe, step::argv args, step::env_map env) {
   m_steps.emplace_back(step::create(get(), exe, args, env));
   return m_steps.back();
 }
@@ -85,7 +83,7 @@ void ctx::create_if_not_exists(fs::path path) const {
   }
 }
 
-std::shared_ptr<ctx> ctx::build() {
+ptr<ctx> ctx::build() {
   try {
     for (auto& step : m_install) {
       bxx::exec(step);
@@ -97,7 +95,5 @@ std::shared_ptr<ctx> ctx::build() {
   return get();
 }
 
-void ctx::install_step(std::shared_ptr<step> step) {
-  m_install.push_back(step);
-}
+void ctx::install_step(ptr<step> step) { m_install.push_back(step); }
 } // namespace bxx
