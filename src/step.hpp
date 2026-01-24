@@ -36,20 +36,19 @@ public:
 
   static ptr<step>
   create(ptr<ctx> ctx, fs::path exe, argv args = {}, env_map env = {});
-
   ptr<step> get();
 
   const argv& opts() const;
-
   ptr<step> add_opt(std::string opt);
   ptr<step> add_opt(argv opts);
 
-  const env_map& env() const;
+  const std::string& msg() const;
+  ptr<step> add_msg(std::string msg);
 
+  const env_map& env() const;
   ptr<step> add_env(env::key key, env::value value);
 
   ptr<step> depends_on(ptr<step> other);
-
   ptr<step> install();
 
   bool is_done() const;
@@ -66,6 +65,8 @@ private:
   env_map m_env;
 
   int m_rc = RC_NOT_EXEC;
+
+  std::string m_message;
 
   std::vector<ptr<step>> m_pre;
 };

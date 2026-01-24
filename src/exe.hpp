@@ -19,15 +19,18 @@ public:
   ptr<target> install() override;
 
 private:
-  void add_entry(fs::path entry);
+  void add_obj(fs::path entry);
 
   fs::path src_to_obj(fs::path src);
 
 private:
   ptr<ctx> m_ctx;
 
+  fs::path m_exe;
+
   std::vector<fs::path> m_files;
   std::vector<ptr<step>> m_steps;
+
   ptr<step> m_link;
 };
 } // namespace bxx

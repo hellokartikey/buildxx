@@ -7,12 +7,15 @@
 namespace bxx {
 exe::exe(private_tag, ptr<ctx> ctx, std::string name, fs::path entry)
     : target(private_tag{}, name)
-    , m_ctx(ctx) {
+    , m_ctx(ctx)
+    , m_exe(m_ctx->bin() / exe::name()) {
   m_link = m_ctx->add_step(m_ctx->tc()->cxx())
-               ->add_opt({"-o", (m_ctx->bin() / exe::name()).string()})
-               ->add_opt(m_ctx->tc()->ld_opts());
+               ->add_opt({"-o", m_exe.string()})
+               ->add_opt(m_ctx->tc()->ld_opts())
+               ->add_msg(std::format("Linking C++ executable {}",
+                                     fs::relative(m_exe).string()));
 
-  add_entry(entry);
+  add_obj(entry);
 }
 
 ptr<exe> exe::create(ptr<ctx> ctx, std::string name, fs::path entry) {
@@ -21,7 +24,7 @@ ptr<exe> exe::create(ptr<ctx> ctx, std::string name, fs::path entry) {
 }
 
 ptr<exe> exe::add_src(fs::path src) {
-  add_entry(src);
+  add_obj(src);
   return get();
 }
 
@@ -39,7 +42,7 @@ ptr<target> exe::install() {
   return get();
 }
 
-void exe::add_entry(fs::path entry) {
+void exe::add_obj(fs::path entry) {
   using namespace std::literals;
 
   auto src = m_ctx->dir() / entry;
@@ -56,7 +59,9 @@ void exe::add_entry(fs::path entry) {
                   ->add_opt(m_ctx->tc()->cxx_opts())
                   ->add_opt("-c")
                   ->add_opt(src.string())
-                  ->add_opt({"-o", obj.string()});
+                  ->add_opt({"-o", obj.string()})
+                  ->add_msg(std::format("Building C++ object {}",
+                                        fs::relative(obj).string()));
 
   m_steps.push_back(step);
 

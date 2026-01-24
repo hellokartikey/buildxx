@@ -33,6 +33,13 @@ ptr<step> step::add_opt(argv opts) {
   return get();
 }
 
+const std::string& step::msg() const { return m_message; }
+
+ptr<step> step::add_msg(std::string msg) {
+  m_message = msg;
+  return get();
+}
+
 const step::env_map& step::env() const { return m_env; }
 
 ptr<step> step::add_env(env::key k, env::value v) {
@@ -66,6 +73,10 @@ int step::exec() {
 
   for (const auto& [k, v] : m_env) {
     env[k] = v;
+  }
+
+  if (m_message.size()) {
+    std::println("{}", m_message);
   }
 
   if (m_ctx->cli()->is_verbose()) {

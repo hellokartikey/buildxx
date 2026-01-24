@@ -30,10 +30,6 @@ void bxx::build(ptr<ctx> b) {
     ->add_opt("Hello from build++")
     ;
 
-  auto err = b
-    ->add_cmd("false")
-    ;
-
   auto app = b
     ->add_exe("test_app", test / "main.cpp")
     ->depends_on(echo)

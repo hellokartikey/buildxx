@@ -32,6 +32,9 @@ public:
   const step::env_map& env() const;
   ptr<cmd> add_env(env::key key, env::value value);
 
+  const std::string& msg() const;
+  ptr<cmd> add_msg(std::string msg);
+
 protected:
   ptr<target> build() override;
 

@@ -10,7 +10,8 @@ cmd::cmd(private_tag,
          step::env_map env)
     : target(private_tag{}, exe)
     , m_ctx(ctx)
-    , m_step(ctx->add_step(env::find_executable(exe), args, env)) {}
+    , m_step(ctx->add_step(env::find_executable(exe), args, env)
+                 ->add_msg(std::format("Running {}", exe))) {}
 
 ptr<cmd>
 cmd::create(ptr<ctx> ctx, std::string exe, step::argv args, step::env_map env) {
@@ -43,6 +44,13 @@ const step::env_map& cmd::env() const { return m_step->env(); }
 
 ptr<cmd> cmd::add_env(env::key key, env::value value) {
   m_step->add_env(key, value);
+  return get();
+}
+
+const std::string& cmd::msg() const { return m_step->msg(); }
+
+ptr<cmd> cmd::add_msg(std::string msg) {
+  m_step->add_msg(msg);
   return get();
 }
 } // namespace bxx
