@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "step.hpp"
 #include "toolchain.hpp"
 
 namespace bxx {
@@ -10,10 +11,10 @@ class target : public std::enable_shared_from_this<target> {
 protected:
   struct private_tag {};
 
-  template <class T> std::shared_ptr<T> build_pre(this T& self, toolchain& tc) {
+  template <class T> std::shared_ptr<T> build_pre(this T& self) {
     for (auto pre : self.m_pre) {
       if (!pre->is_built()) {
-        pre->build(tc);
+        pre->build();
       }
     }
 
@@ -24,7 +25,9 @@ protected:
     return std::static_pointer_cast<T>(self.shared_from_this());
   }
 
-  virtual std::shared_ptr<target> build(toolchain& tc);
+  virtual std::shared_ptr<target> build();
+
+  int exec_step(std::shared_ptr<step> step);
 
 public:
   target(private_tag, std::string name);
@@ -40,6 +43,15 @@ public:
   template <class T>
   std::shared_ptr<T> depends_on(this T& self, std::shared_ptr<target> other) {
     self.m_pre.push_back(other);
+    return self.get();
+  }
+
+  template <class T>
+  std::shared_ptr<T> depends_on(this T& self,
+                                std::vector<std::shared_ptr<target>> others) {
+    for (auto other : others) {
+      self.depends_on(other);
+    }
     return self.get();
   }
 

@@ -9,14 +9,14 @@ void build(std::shared_ptr<ctx> ctx);
 
 int main(int argc, char** argv) {
   // 1. parse cli args
-  bxx::cli app;
-  CLI11_PARSE(app, argc, argv);
+  auto ctx = bxx::ctx::create(bxx::cli::create());
+  CLI11_PARSE(*(ctx->cli()), argc, argv);
 
   // 2. call build description
-  bxx::build(app.build_ctx());
+  bxx::build(ctx);
 
   // 3. compile
-  app.build();
+  ctx->build();
 
   return 0;
 }
@@ -28,14 +28,15 @@ void bxx::build(std::shared_ptr<ctx> b) {
   auto echo = b
     ->add_command("echo")
     ->add_option("Hello from build++")
-    ->install();
+    ;
 
-  // auto compile = ctx
-  //   .add_step(ctx.toolchain().cxx())
-  //   .add_path_option(test / app.build_file())
-  //   .add_option("-otest_app")
-  //   .depends_on(echo)
-  //   .install()
-  //   ;
+  auto err = b
+    ->add_command("false");
+
+  auto app = b
+    ->add_executable("test_app", test / "main.cpp")
+    ->depends_on(echo)
+    ->install()
+    ;
 }
 // clang-format on

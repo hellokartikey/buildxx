@@ -1,5 +1,8 @@
 #include "step.hpp"
 
+#include <print>
+
+#include "cli.hpp"
 #include "ctx.hpp"
 
 namespace bxx {
@@ -72,9 +75,23 @@ int step::exec() {
     env[k] = v;
   }
 
+  if (m_ctx->cli()->is_verbose()) {
+    std::print("{} ", m_exe.string());
+    for (auto& arg : m_args) {
+      std::print("{} ", arg);
+    }
+    std::println();
+  }
+
   proc::process p(*m_ctx->executor(), m_exe, m_args,
                   proc::process_environment(env));
 
-  return m_rc = p.wait();
+  m_rc = p.wait();
+
+  if (m_rc != RC_OK) {
+    throw std::runtime_error(std::format("step returned exit code {}", m_rc));
+  }
+
+  return m_rc;
 }
 } // namespace bxx

@@ -4,19 +4,19 @@
 #include <CLI/CLI.hpp>
 #include <memory>
 
-#include "ctx.hpp"
-
 namespace bxx {
-class cli {
+class cli : public std::enable_shared_from_this<cli> {
+  struct private_tag {};
+
 public:
-  cli();
+  cli(private_tag);
   ~cli() = default;
 
-  inline const std::string& build_file() const { return m_build_file; }
+  static std::shared_ptr<cli> create();
+  std::shared_ptr<cli> get();
 
-  inline std::shared_ptr<ctx> build_ctx() { return m_ctx; }
-
-  inline void build() { m_ctx->build(); }
+  bool is_verbose() const;
+  const std::string& build_file() const;
 
   void parse(int argc, char** argv);
   int exit(const CLI::ParseError& e);
@@ -25,10 +25,7 @@ private:
   CLI::App m_app;
 
   std::string m_build_file;
-
-  std::shared_ptr<ctx> m_ctx;
-
-  bool m_ok = true;
+  bool m_verbose;
 };
 } // namespace bxx
 

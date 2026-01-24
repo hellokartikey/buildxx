@@ -10,6 +10,7 @@ PRIVATE
 
   target.cpp
   command.cpp
+  executable.cpp
 
   toolchain.cpp
   unix_toolchain.cpp

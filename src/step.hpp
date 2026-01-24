@@ -9,6 +9,7 @@
 
 namespace bxx {
 class ctx;
+class target;
 
 class step : public std::enable_shared_from_this<step> {
 private:
@@ -20,6 +21,7 @@ public:
 
   // posix exit code is 8bit unsigned
   static constexpr int RC_NOT_EXEC = 256;
+  static constexpr int RC_OK = 0;
 
   step(private_tag,
        std::shared_ptr<ctx> ctx,
@@ -46,6 +48,7 @@ public:
   std::shared_ptr<step> add_env(env::key key, env::value value);
 
   std::shared_ptr<step> depends_on(std::shared_ptr<step> other);
+
   std::shared_ptr<step> install();
 
   bool is_done() const;
@@ -54,6 +57,7 @@ private:
   int exec();
 
   friend ctx;
+  friend target;
 
 private:
   std::shared_ptr<ctx> m_ctx;

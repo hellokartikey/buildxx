@@ -8,9 +8,6 @@ namespace bxx {
 class ctx;
 
 class command : public target {
-protected:
-  struct private_tag {};
-
 public:
   command(private_tag,
           std::shared_ptr<ctx> ctx,
@@ -35,7 +32,7 @@ public:
   std::shared_ptr<command> add_env(env::key key, env::value value);
 
 protected:
-  std::shared_ptr<target> build(toolchain& tc) override;
+  std::shared_ptr<target> build() override;
 
 private:
   std::shared_ptr<ctx> m_ctx;

@@ -8,7 +8,7 @@ command::command(private_tag,
                  std::string exe,
                  step::arguments args,
                  step::environment env)
-    : target(target::private_tag{}, exe)
+    : target(private_tag{}, exe)
     , m_ctx(ctx)
     , m_step(ctx->add_step(env::find_executable(exe), args, env)) {}
 
@@ -19,14 +19,15 @@ std::shared_ptr<command> command::create(std::shared_ptr<ctx> ctx,
   return std::make_shared<command>(private_tag{}, ctx, exe, args, env);
 }
 
-std::shared_ptr<target> command::build(toolchain& tc) {
-  target::build(tc);
-  return get();
-}
-
 std::shared_ptr<target> command::install() {
   target::install();
   m_ctx->install_step(m_step);
+  return get();
+}
+
+std::shared_ptr<target> command::build() {
+  target::build();
+  exec_step(m_step);
   return get();
 }
 
