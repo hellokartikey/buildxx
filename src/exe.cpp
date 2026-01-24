@@ -14,7 +14,6 @@ exe::exe(private_tag, ptr<ctx> ctx, std::string name, fs::path entry)
                ->add_opt(m_ctx->tc()->ld_opts())
                ->add_msg(std::format("Linking C++ executable {}",
                                      fs::relative(m_exe).string()));
-
   add_obj(entry);
 }
 
@@ -39,6 +38,12 @@ ptr<exe> exe::add_src(fs::path prefix, std::vector<std::string> files) {
 ptr<target> exe::install() {
   target::install();
   m_link->install();
+  return get();
+}
+
+ptr<target> exe::build() {
+  target::build();
+  exec(m_link);
   return get();
 }
 

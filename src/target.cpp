@@ -17,7 +17,7 @@ ptr<target> target::build() {
 }
 
 ptr<target> target::install() {
-  for (auto tar : m_pre) {
+  for (auto tar : pre()) {
     tar->install();
   }
 

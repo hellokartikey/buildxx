@@ -18,7 +18,10 @@ public:
 
   ptr<target> install() override;
 
-private:
+  ptr<target> build() override;
+  bool should_build() override;
+
+protected:
   void add_obj(fs::path entry);
 
   fs::path src_to_obj(fs::path src);

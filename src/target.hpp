@@ -26,7 +26,7 @@ protected:
     return std::static_pointer_cast<T>(self.shared_from_this());
   }
 
-  virtual ptr<target> build();
+  inline std::vector<ptr<target>> pre() { return m_pre; }
 
 public:
   target(private_tag, std::string name);
@@ -38,6 +38,9 @@ public:
   bool is_installed() const;
 
   virtual ptr<target> install();
+
+  virtual bool should_build() { return true; }
+  virtual ptr<target> build();
 
   template <class T> ptr<T> depends_on(this T& self, ptr<target> other) {
     self.m_pre.push_back(other);
