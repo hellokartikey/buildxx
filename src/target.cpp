@@ -25,8 +25,6 @@ std::shared_ptr<target> target::install() {
   return get();
 }
 
-int target::exec_step(std::shared_ptr<step> step) { return step->exec(); }
-
 bool target::is_built() const { return m_built; }
 
 bool target::is_installed() const { return m_installed; }

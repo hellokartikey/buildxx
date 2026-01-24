@@ -9,11 +9,11 @@ PRIVATE
   step.cpp
 
   target.cpp
-  command.cpp
-  executable.cpp
+  cmd.cpp
+  exe.cpp
 
-  toolchain.cpp
-  unix_toolchain.cpp
+  tc.cpp
+  tc_unix.cpp
 )
 
 target_link_libraries(buildxx PRIVATE Boost::process CLI11::CLI11)

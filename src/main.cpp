@@ -23,18 +23,19 @@ int main(int argc, char** argv) {
 
 // clang-format off
 void bxx::build(std::shared_ptr<ctx> b) {
-  auto test = b->sub_directory("test");
+  auto test = b->sub_dir("test");
 
   auto echo = b
-    ->add_command("echo")
-    ->add_option("Hello from build++")
+    ->add_cmd("echo")
+    ->add_opt("Hello from build++")
     ;
 
   auto err = b
-    ->add_command("false");
+    ->add_cmd("false")
+    ;
 
   auto app = b
-    ->add_executable("test_app", test / "main.cpp")
+    ->add_exe("test_app", test / "main.cpp", lang::cxx)
     ->depends_on(echo)
     ->install()
     ;

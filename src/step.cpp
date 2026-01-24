@@ -6,41 +6,36 @@
 #include "ctx.hpp"
 
 namespace bxx {
-step::step(private_tag,
-           std::shared_ptr<ctx> ctx,
-           fs::path exe,
-           arguments args,
-           environment env)
+step::step(
+    private_tag, std::shared_ptr<ctx> ctx, fs::path exe, argv args, env_map env)
     : m_ctx(ctx)
     , m_exe(exe)
     , m_args(args)
     , m_env(env) {}
 
-std::shared_ptr<step> step::create(std::shared_ptr<ctx> ctx,
-                                   fs::path exe,
-                                   arguments args,
-                                   environment env) {
+std::shared_ptr<step>
+step::create(std::shared_ptr<ctx> ctx, fs::path exe, argv args, env_map env) {
   return std::make_shared<step>(private_tag{}, ctx, exe, args, env);
 }
 
 std::shared_ptr<step> step::get() { return shared_from_this(); }
 
-const step::arguments& step::options() const { return m_args; }
+const step::argv& step::opts() const { return m_args; }
 
-std::shared_ptr<step> step::add_option(std::string opt) {
+std::shared_ptr<step> step::add_opt(std::string opt) {
   m_args.emplace_back(std::move(opt));
   return get();
 }
 
-std::shared_ptr<step> step::add_options(arguments opts) {
+std::shared_ptr<step> step::add_opt(argv opts) {
   for (auto& opt : opts) {
-    add_option(std::move(opt));
+    add_opt(std::move(opt));
   }
 
   return get();
 }
 
-const step::environment& step::env() const { return m_env; }
+const step::env_map& step::env() const { return m_env; }
 
 std::shared_ptr<step> step::add_env(env::key k, env::value v) {
   m_env[k] = v;
@@ -66,7 +61,7 @@ int step::exec() {
     }
   }
 
-  environment env;
+  env_map env;
   for (const auto& kv : env::current()) {
     env[kv.key()] = kv.value();
   }
@@ -83,7 +78,7 @@ int step::exec() {
     std::println();
   }
 
-  proc::process p(*m_ctx->executor(), m_exe, m_args,
+  proc::process p(*m_ctx->exec(), m_exe, m_args,
                   proc::process_environment(env));
 
   m_rc = p.wait();

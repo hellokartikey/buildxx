@@ -1,14 +1,16 @@
 #include <string>
 
-#include "toolchain.hpp"
+#include "tc.hpp"
 
 using namespace std::literals;
 
 namespace bxx {
-class unix_toolchain : public toolchain {
+class tc_unix : public tc {
 public:
-  unix_toolchain(std::string prefix = ""s);
-  ~unix_toolchain() override = default;
+  tc_unix(private_tag, std::string prefix = ""s);
+  ~tc_unix() override = default;
+
+  static std::shared_ptr<tc_unix> create(std::string prefix = ""s);
 
   inline const fs::path& cxx() const override { return m_cxx; }
   inline const fs::path& cc() const override { return m_cc; }

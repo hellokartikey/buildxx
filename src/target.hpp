@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "step.hpp"
-#include "toolchain.hpp"
+#include "tc.hpp"
 
 namespace bxx {
 class target : public std::enable_shared_from_this<target> {
@@ -26,8 +26,6 @@ protected:
   }
 
   virtual std::shared_ptr<target> build();
-
-  int exec_step(std::shared_ptr<step> step);
 
 public:
   target(private_tag, std::string name);

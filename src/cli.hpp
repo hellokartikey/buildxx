@@ -1,8 +1,11 @@
 #ifndef HK_BUILDXX_CLI_HPP
 #define HK_BUILDXX_CLI_HPP
 
-#include <CLI/CLI.hpp>
 #include <memory>
+
+#include <CLI/CLI.hpp>
+
+int main(int, char**);
 
 namespace bxx {
 class cli : public std::enable_shared_from_this<cli> {
@@ -12,11 +15,15 @@ public:
   cli(private_tag);
   ~cli() = default;
 
-  static std::shared_ptr<cli> create();
   std::shared_ptr<cli> get();
 
   bool is_verbose() const;
   const std::string& build_file() const;
+
+private: // for friends
+  friend int ::main(int, char**);
+
+  static std::shared_ptr<cli> create();
 
   void parse(int argc, char** argv);
   int exit(const CLI::ParseError& e);

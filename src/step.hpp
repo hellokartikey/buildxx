@@ -9,15 +9,18 @@
 
 namespace bxx {
 class ctx;
-class target;
+
+class step;
+
+int exec(std::shared_ptr<step> s);
 
 class step : public std::enable_shared_from_this<step> {
 private:
   struct private_tag {};
 
 public:
-  using environment = std::unordered_map<env::key, env::value>;
-  using arguments = std::vector<std::string>;
+  using env_map = std::unordered_map<env::key, env::value>;
+  using argv = std::vector<std::string>;
 
   // posix exit code is 8bit unsigned
   static constexpr int RC_NOT_EXEC = 256;
@@ -26,24 +29,24 @@ public:
   step(private_tag,
        std::shared_ptr<ctx> ctx,
        fs::path exe,
-       arguments args = {},
-       environment env = {});
+       argv args = {},
+       env_map env = {});
 
   ~step() = default;
 
   static std::shared_ptr<step> create(std::shared_ptr<ctx> ctx,
                                       fs::path exe,
-                                      arguments args = {},
-                                      environment env = {});
+                                      argv args = {},
+                                      env_map env = {});
 
   std::shared_ptr<step> get();
 
-  const arguments& options() const;
+  const argv& opts() const;
 
-  std::shared_ptr<step> add_option(std::string opt);
-  std::shared_ptr<step> add_options(arguments opts);
+  std::shared_ptr<step> add_opt(std::string opt);
+  std::shared_ptr<step> add_opt(argv opts);
 
-  const environment& env() const;
+  const env_map& env() const;
 
   std::shared_ptr<step> add_env(env::key key, env::value value);
 
@@ -54,17 +57,15 @@ public:
   bool is_done() const;
 
 private:
+  friend int exec(std::shared_ptr<step> s) { return s->exec(); }
   int exec();
-
-  friend ctx;
-  friend target;
 
 private:
   std::shared_ptr<ctx> m_ctx;
 
   fs::path m_exe;
-  arguments m_args;
-  environment m_env;
+  argv m_args;
+  env_map m_env;
 
   int m_rc = RC_NOT_EXEC;
 
