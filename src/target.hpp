@@ -39,7 +39,6 @@ public:
 
   virtual ptr<target> install();
 
-  virtual bool should_build() { return true; }
   virtual ptr<target> build();
 
   template <class T> ptr<T> depends_on(this T& self, ptr<target> other) {

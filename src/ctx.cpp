@@ -1,7 +1,8 @@
 #include "ctx.hpp"
 
-#include <print>
 #include <stdexcept>
+
+#include <spdlog/spdlog.h>
 
 #include "cli.hpp"
 #include "tc_unix.hpp"
@@ -47,7 +48,7 @@ fs::path ctx::bin() const {
 }
 
 fs::path ctx::cache() const {
-  auto path = dir() / CACHE;
+  auto path = prefix() / TMP_DIR;
 
   create_if_not_exists(path);
 
@@ -89,7 +90,7 @@ ptr<ctx> ctx::build() {
       bxx::exec(step);
     }
   } catch (std::runtime_error& e) {
-    std::println(stderr, "error: {}", e.what());
+    spdlog::critical("error: {}", e.what());
   }
 
   return get();

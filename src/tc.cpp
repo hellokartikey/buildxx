@@ -16,7 +16,7 @@ ptr<tc> tc::add_ld_opt(std::string opt) {
   return get();
 }
 
-ptr<tc> tc::add_cxx_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_cxx_opts(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_cxx_opt(std::move(opt));
   }
@@ -24,7 +24,7 @@ ptr<tc> tc::add_cxx_opt(std::vector<std::string> opts) {
   return get();
 }
 
-ptr<tc> tc::add_cc_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_cc_opts(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_cc_opt(std::move(opt));
   }
@@ -32,7 +32,7 @@ ptr<tc> tc::add_cc_opt(std::vector<std::string> opts) {
   return get();
 }
 
-ptr<tc> tc::add_ld_opt(std::vector<std::string> opts) {
+ptr<tc> tc::add_ld_opts(std::vector<std::string> opts) {
   for (auto& opt : opts) {
     add_ld_opt(std::move(opt));
   }

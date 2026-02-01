@@ -21,9 +21,9 @@ public:
   ptr<tc> add_cc_opt(std::string opt);
   ptr<tc> add_ld_opt(std::string opt);
 
-  ptr<tc> add_cxx_opt(std::vector<std::string> opts);
-  ptr<tc> add_cc_opt(std::vector<std::string> opts);
-  ptr<tc> add_ld_opt(std::vector<std::string> opts);
+  ptr<tc> add_cxx_opts(std::vector<std::string> opts);
+  ptr<tc> add_cc_opts(std::vector<std::string> opts);
+  ptr<tc> add_ld_opts(std::vector<std::string> opts);
 
   std::vector<std::string> cxx_opts(std::vector<std::string> opts = {}) const;
   std::vector<std::string> cc_opts(std::vector<std::string> opts = {}) const;

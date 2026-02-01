@@ -2,6 +2,8 @@
 
 #include <print>
 
+#include <spdlog/spdlog.h>
+
 #include "cli.hpp"
 #include "ctx.hpp"
 
@@ -76,15 +78,18 @@ int step::exec() {
   }
 
   if (m_message.size()) {
-    std::println("{}", m_message);
+    spdlog::info("{}", m_message);
   }
 
   if (m_ctx->cli()->is_verbose()) {
-    std::print("{} ", m_exe.string());
+    std::stringstream ss;
+    ss << m_exe.string();
     for (auto& arg : m_args) {
-      std::print("{} ", arg);
+      ss << arg;
     }
-    std::println();
+    ss << "\n";
+
+    spdlog::info("{}", ss.view());
   }
 
   proc::process p(*m_ctx->exec(), m_exe, m_args,

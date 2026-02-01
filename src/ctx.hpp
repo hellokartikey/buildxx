@@ -18,9 +18,9 @@ class ctx : public std::enable_shared_from_this<ctx> {
 private:
   struct private_tag {};
 
-  static constexpr auto* CACHE = ".buildxx";
   static constexpr auto* PREFIX = "buildxx-out";
 
+  static constexpr auto* TMP_DIR = "tmp";
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
 

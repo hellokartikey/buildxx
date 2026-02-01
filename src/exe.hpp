@@ -19,7 +19,6 @@ public:
   ptr<target> install() override;
 
   ptr<target> build() override;
-  bool should_build() override;
 
 protected:
   void add_obj(fs::path entry);
