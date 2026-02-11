@@ -1,8 +1,4 @@
-compile_commands.json
-
-.cache/
-
-build/
-
-.buildxx/
 buildxx-out/
+build/
+.cache/
+compile_commands.json

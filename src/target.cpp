@@ -1,31 +1,15 @@
 #include "target.hpp"
 
-namespace bxx {
-target::target(private_tag, std::string name)
-    : m_name(name) {}
+#include "build_ctx.hpp"
 
-ptr<target> target::create(std::string name) {
-  return std::make_shared<target>(private_tag{}, name);
+namespace buildxx {
+target::target(build_ctx& ctx)
+    : m_first_step(&ctx.add_phony())
+    , m_final_step(&ctx.add_phony()) {
+  final_step().depends_on(first_step());
 }
 
-const std::string& target::name() const { return m_name; }
+step& target::first_step() { return *m_first_step; }
 
-ptr<target> target::build() {
-  build_pre();
-  m_built = true;
-  return get();
-}
-
-ptr<target> target::install() {
-  for (auto tar : pre()) {
-    tar->install();
-  }
-
-  m_installed = true;
-  return get();
-}
-
-bool target::is_built() const { return m_built; }
-
-bool target::is_installed() const { return m_installed; }
-} // namespace bxx
+step& target::final_step() { return *m_final_step; }
+} // namespace buildxx

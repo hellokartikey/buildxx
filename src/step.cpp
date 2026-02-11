@@ -1,74 +1,67 @@
 #include "step.hpp"
 
-#include <print>
-
 #include <spdlog/spdlog.h>
 
-#include "cli.hpp"
-#include "ctx.hpp"
+#include "build_ctx.hpp"
 
-namespace bxx {
-step::step(private_tag, ptr<ctx> ctx, fs::path exe, argv args, env_map env)
-    : m_ctx(ctx)
-    , m_exe(exe)
+namespace buildxx {
+step::step(fs::path exe, arguments args, environment_map env)
+    : m_exe(exe)
     , m_args(args)
     , m_env(env) {}
 
-ptr<step> step::create(ptr<ctx> ctx, fs::path exe, argv args, env_map env) {
-  return std::make_shared<step>(private_tag{}, ctx, exe, args, env);
+const step::arguments& step::options() const { return m_args; }
+
+step& step::add_option(std::string option) {
+  m_args.emplace_back(std::move(option));
+  return *this;
 }
 
-ptr<step> step::get() { return shared_from_this(); }
-
-const step::argv& step::opts() const { return m_args; }
-
-ptr<step> step::add_opt(std::string opt) {
-  m_args.emplace_back(std::move(opt));
-  return get();
-}
-
-ptr<step> step::add_opt(argv opts) {
-  for (auto& opt : opts) {
-    add_opt(std::move(opt));
+step& step::add_option(arguments options) {
+  for (auto& option : options) {
+    add_option(std::move(option));
   }
 
-  return get();
+  return *this;
 }
 
-const std::string& step::msg() const { return m_message; }
+const std::string& step::message() const { return m_message; }
 
-ptr<step> step::add_msg(std::string msg) {
-  m_message = msg;
-  return get();
+step& step::add_message(std::string message) {
+  m_message = std::move(message);
+  return *this;
 }
 
-const step::env_map& step::env() const { return m_env; }
+const step::environment_map& step::environment() const { return m_env; }
 
-ptr<step> step::add_env(env::key k, env::value v) {
+step& step::add_environment(env::key k, env::value v) {
   m_env[k] = v;
-  return get();
+  return *this;
 }
 
-ptr<step> step::depends_on(ptr<step> other) {
-  m_pre.push_back(other);
-  return get();
+step& step::add_environment(environment_map environment) {
+  for (auto& [k, v] : environment) {
+    m_env[k] = v;
+  }
+
+  return *this;
 }
 
-ptr<step> step::install() {
-  m_ctx->install_step(get());
-  return get();
+step& step::depends_on(step& other) {
+  m_pre.push_back(&other);
+  return *this;
 }
 
 bool step::is_done() const { return m_rc != RC_NOT_EXEC; }
 
-int step::exec() {
-  for (auto pre : m_pre) {
+int step::run(build_ctx& ctx) {
+  for (auto* pre : m_pre) {
     if (!pre->is_done()) {
-      pre->exec();
+      pre->run(ctx);
     }
   }
 
-  env_map env;
+  environment_map env;
   for (const auto& kv : env::current()) {
     env[kv.key()] = kv.value();
   }
@@ -81,7 +74,7 @@ int step::exec() {
     spdlog::info("{}", m_message);
   }
 
-  if (m_ctx->cli()->is_verbose()) {
+  if (ctx.cli().is_verbose()) {
     std::stringstream ss;
     ss << m_exe.string();
     for (auto& arg : m_args) {
@@ -92,7 +85,7 @@ int step::exec() {
     spdlog::info("{}", ss.view());
   }
 
-  proc::process p(*m_ctx->exec(), m_exe, m_args,
+  proc::process p(ctx.io_context(), m_exe, m_args,
                   proc::process_environment(env));
 
   m_rc = p.wait();
@@ -103,4 +96,4 @@ int step::exec() {
 
   return m_rc;
 }
-} // namespace bxx
+} // namespace buildxx

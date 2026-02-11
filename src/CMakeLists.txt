@@ -3,17 +3,15 @@ add_executable(buildxx main.cpp)
 target_sources(buildxx
 PRIVATE
   cli.cpp
-
-  ctx.cpp
-
+  build_ctx.cpp
   step.cpp
 
   target.cpp
-  cmd.cpp
-  exe.cpp
+  command.cpp
+  executable.cpp
 
-  tc.cpp
-  tc_unix.cpp
+  toolchain.cpp
+  unix_toolchain.cpp
 )
 
 target_link_libraries(buildxx
