@@ -6,12 +6,21 @@
 
 namespace buildxx {
 class command : public target {
-public:
+private:
   command(build_ctx& ctx,
+          std::string name,
           std::string exe,
           step::arguments args = {},
           step::environment_map env = {});
+
+public:
   ~command() = default;
+
+  static command& add(build_ctx& ctx,
+                      std::string name,
+                      std::string exe,
+                      step::arguments args = {},
+                      step::environment_map env = {});
 
   const step::arguments& options() const;
   command& add_option(std::string option);

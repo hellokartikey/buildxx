@@ -12,6 +12,15 @@ class toolchain;
 class target {
 public:
   target(build_ctx& ctx, std::string name);
+  virtual ~target() = default;
+
+  // cannot be copied
+  target(const target&) = delete;
+  target& operator=(const target&) = delete;
+
+  // can be moved
+  target(target&&) = default;
+  target& operator=(target&&) = default;
 
   template <class T> T& depends_on(this T& self, target& other) {
     self.m_deps.push_back(&other);

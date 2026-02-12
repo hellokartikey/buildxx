@@ -1,6 +1,7 @@
 #include "build_ctx.hpp"
 
 #include <stdexcept>
+#include <print>
 
 #include <spdlog/spdlog.h>
 
@@ -74,12 +75,16 @@ void build_ctx::create_if_not_exists(fs::path path) const {
   }
 }
 
-build_ctx& build_ctx::build_install_steps() {
+void build_ctx::build_install_steps() {
   for (auto& step : m_install) {
     step->run(*this);
   }
+}
 
-  return *this;
+void build_ctx::list_targets() const {
+  for (const auto& [k, v] : m_targets) {
+    std::println("{}", k);
+  }
 }
 
 void build_ctx::install_step(step& step) { m_install.push_back(&step); }

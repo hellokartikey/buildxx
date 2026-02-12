@@ -45,15 +45,27 @@ public:
   step& add_phony();
   void install_step(step& step);
 
+  template <std::derived_from<target> T> T& add_target(T* ptr) {
+    if (m_targets.contains(ptr->name())) {
+      throw std::runtime_error(
+          std::format("Target with name {} already exists.", ptr->name()));
+    }
+    m_targets[ptr->name()].reset(ptr);
+    return *ptr;
+  }
+
 private:
   void create_if_not_exists(fs::path path) const;
-  build_ctx& build_install_steps();
+
+  void build_install_steps();
+  void list_targets() const;
 
 private:
   buildxx::cli m_app;
   std::unique_ptr<buildxx::toolchain> m_tc;
   asio::io_context m_io;
 
+  std::map<std::string, std::unique_ptr<target>> m_targets;
   std::list<step> m_steps;
   std::vector<step*> m_install;
 };

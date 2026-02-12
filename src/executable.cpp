@@ -7,6 +7,10 @@ executable::executable(build_ctx& ctx, std::string name, fs::path entry)
     : target(ctx, name)
     , m_files({entry}) {}
 
+executable& executable::add(build_ctx& ctx, std::string name, fs::path entry) {
+  return ctx.add_target(new executable(ctx, name, entry));
+}
+
 auto executable::sources() const -> const source_files& { return m_files; }
 
 executable& executable::add_source(fs::path file) {

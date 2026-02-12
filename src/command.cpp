@@ -4,10 +4,11 @@
 
 namespace buildxx {
 command::command(build_ctx& ctx,
+                 std::string name,
                  std::string exe,
                  step::arguments args,
                  step::environment_map env)
-    : target(ctx, exe)
+    : target(ctx, name)
     , m_exe(env::find_executable(exe))
     , m_argv(args)
     , m_env(env) {
@@ -15,6 +16,14 @@ command::command(build_ctx& ctx,
     throw std::runtime_error(
         std::format("cannot find executable {} in PATH", exe));
   }
+}
+
+command& command::add(build_ctx& ctx,
+                      std::string name,
+                      std::string exe,
+                      step::arguments args,
+                      step::environment_map env) {
+  return ctx.add_target(new command(ctx, name, exe, args, env));
 }
 
 command& command::add_option(std::string option) {
