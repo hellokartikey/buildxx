@@ -4,8 +4,7 @@
 
 namespace buildxx {
 executable::executable(build_ctx& ctx, std::string name, fs::path entry)
-    : target(ctx)
-    , m_exe(name)
+    : target(ctx, name)
     , m_files({entry}) {}
 
 auto executable::sources() const -> const source_files& { return m_files; }
@@ -26,10 +25,11 @@ void executable::create_steps(build_ctx& ctx, toolchain& tc) {
   std::vector<object> objects;
 
   for (const auto& file : m_files) {
-    objects.push_back(tc.build_cxx(ctx, file));
+    auto object = tc.build_cxx(ctx, file);
+    objects.push_back(object);
   }
 
-  auto binary = tc.link_cxx(ctx, m_exe, objects);
+  auto binary = tc.link_cxx(ctx, name(), objects);
   final_step().depends_on(*binary.link_step);
 }
 } // namespace buildxx

@@ -19,7 +19,6 @@ public:
   void create_steps(build_ctx& ctx, toolchain& tc) override;
 
 private:
-  std::string m_exe{};
   source_files m_files{};
 
   step* m_link_step{};

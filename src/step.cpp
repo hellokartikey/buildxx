@@ -52,6 +52,11 @@ step& step::depends_on(step& other) {
   return *this;
 }
 
+step& step::depends_on_first(step& other) {
+  m_pre.insert(m_pre.begin(), &other);
+  return *this;
+}
+
 bool step::is_done() const { return m_rc != RC_NOT_EXEC; }
 
 int step::run(build_ctx& ctx) {

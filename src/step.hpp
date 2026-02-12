@@ -22,6 +22,7 @@ public:
   ~step() = default;
 
   step& depends_on(step& other);
+  step& depends_on_first(step& other);
 
   bool is_done() const;
   int run(build_ctx& ctx);

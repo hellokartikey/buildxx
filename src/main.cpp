@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
   try {
     ctx.build_install_steps();
   } catch (std::runtime_error& e) {
-    spdlog::critical("error: {}", e.what());
+    spdlog::critical("buildxx error: {}", e.what());
     return 1;
   }
 
@@ -35,8 +35,6 @@ int main(int argc, char** argv) {
 // clang-format off
 void buildxx::build(build_ctx& ctx) {
   auto test = ctx.sub_directory("test");
-
-  ctx.toolchain().set_std(cxx::cxx20);
 
   auto echo =
      command(ctx, "echo")

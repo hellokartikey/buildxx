@@ -17,7 +17,7 @@ toolchain& build_ctx::toolchain() { return *m_tc; }
 asio::io_context& build_ctx::io_context() { return m_io; }
 
 build_ctx& build_ctx::install(target& target) {
-  target.create_steps(*this, *m_tc);
+  target.create_steps_with_deps(*this, *m_tc);
   install_step(target.final_step());
   return *this;
 }

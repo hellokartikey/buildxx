@@ -7,7 +7,7 @@ command::command(build_ctx& ctx,
                  std::string exe,
                  step::arguments args,
                  step::environment_map env)
-    : target(ctx)
+    : target(ctx, exe)
     , m_exe(env::find_executable(exe))
     , m_argv(args)
     , m_env(env) {
@@ -44,7 +44,8 @@ command& command::add_message(std::string message) {
 }
 
 void command::create_steps(build_ctx& ctx, toolchain& tc) {
-  auto& step = ctx.add_step(m_exe, m_argv, m_env);
+  auto& step = ctx.add_step(m_exe, m_argv, m_env)
+                   .add_message(std::format("Running command {}", name()));
   final_step().depends_on(step);
 }
 } // namespace buildxx
