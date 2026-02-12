@@ -7,6 +7,7 @@ PRIVATE
   step.cpp
 
   target.cpp
+  phony.cpp
   command.cpp
   executable.cpp
 

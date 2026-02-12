@@ -2,6 +2,7 @@
 #define HK_BUILDXX_BUILD_CTX_HPP
 
 #include <list>
+#include <ranges>
 #include <vector>
 
 #include "cli.hpp"
@@ -20,6 +21,8 @@ private:
   static constexpr auto* TMP_DIR = "tmp";
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
+
+  static constexpr auto* INSTALL = "install";
 
   build_ctx();
   friend int ::main(int, char**);
@@ -46,11 +49,14 @@ public:
   void install_step(step& step);
 
   template <std::derived_from<target> T> T& add_target(T* ptr) {
-    if (m_targets.contains(ptr->name())) {
+    using namespace std::ranges;
+
+    if (contains(m_targets, ptr->name(),
+                 [](auto& ptr) { return ptr->name(); })) {
       throw std::runtime_error(
           std::format("Target with name {} already exists.", ptr->name()));
     }
-    m_targets[ptr->name()].reset(ptr);
+    m_targets.emplace_back(ptr);
     return *ptr;
   }
 
@@ -65,7 +71,7 @@ private:
   std::unique_ptr<buildxx::toolchain> m_tc;
   asio::io_context m_io;
 
-  std::map<std::string, std::unique_ptr<target>> m_targets;
+  std::vector<std::unique_ptr<target>> m_targets;
   std::list<step> m_steps;
   std::vector<step*> m_install;
 };

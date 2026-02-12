@@ -1,15 +1,19 @@
 #include "build_ctx.hpp"
 
-#include <stdexcept>
 #include <print>
+#include <stdexcept>
 
 #include <spdlog/spdlog.h>
 
+#include "phony.hpp"
 #include "unix_toolchain.hpp"
 
 namespace buildxx {
 build_ctx::build_ctx()
-    : m_tc(new unix_toolchain) {}
+    : m_tc(new unix_toolchain) {
+  auto& install = phony::add(*this, INSTALL);
+  install_step(install.final_step());
+}
 
 cli& build_ctx::cli() { return m_app; }
 
@@ -18,8 +22,7 @@ toolchain& build_ctx::toolchain() { return *m_tc; }
 asio::io_context& build_ctx::io_context() { return m_io; }
 
 build_ctx& build_ctx::install(target& target) {
-  target.create_steps_with_deps(*this, *m_tc);
-  install_step(target.final_step());
+  m_targets.front()->depends_on(target);
   return *this;
 }
 
@@ -76,14 +79,21 @@ void build_ctx::create_if_not_exists(fs::path path) const {
 }
 
 void build_ctx::build_install_steps() {
+  m_targets.front()->create_steps_with_deps(*this, *m_tc);
   for (auto& step : m_install) {
     step->run(*this);
   }
 }
 
 void build_ctx::list_targets() const {
-  for (const auto& [k, v] : m_targets) {
-    std::println("{}", k);
+  using namespace std::ranges::views;
+
+  for (const auto& [idx, ptr] : enumerate(m_targets)) {
+    if (idx == 0) {
+      std::println("{} [default]", ptr->name());
+    } else {
+      std::println("{}", ptr->name());
+    }
   }
 }
 
