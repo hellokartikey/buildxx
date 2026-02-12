@@ -3,11 +3,13 @@
 #include <spdlog/spdlog.h>
 
 #include "build_ctx.hpp"
+#include "cli.hpp"
 #include "command.hpp"
 #include "executable.hpp"
+#include "unix_toolchain.hpp"
 
 namespace buildxx {
-void build(build_ctx&);
+void build(build_ctx&, toolchain&);
 }
 
 int main(int argc, char** argv) {
@@ -19,9 +21,10 @@ int main(int argc, char** argv) {
     // 1. initialize systems
     buildxx::cli cli;
     buildxx::build_ctx ctx;
+    buildxx::unix_toolchain tc;
 
     // 2. create build graph
-    buildxx::build(ctx);
+    buildxx::build(ctx, tc);
 
     // 3. parse cli options
     CLI11_PARSE(cli, argc, argv);
@@ -32,7 +35,7 @@ int main(int argc, char** argv) {
     }
 
     // 4.2 build default install step
-    return ctx.build_install_steps(cli.target(), cli.is_verbose());
+    return ctx.build_install_steps(tc, cli.target(), cli.is_verbose());
 
   } catch (std::runtime_error& e) {
     spdlog::critical("buildxx error: {}", e.what());

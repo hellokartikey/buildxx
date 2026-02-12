@@ -2,10 +2,8 @@
 #define HK_BUILDXX_BUILD_CTX_HPP
 
 #include <list>
-#include <ranges>
 #include <vector>
 
-#include "cli.hpp"
 #include "common.hpp"
 #include "step.hpp"
 #include "target.hpp"
@@ -21,6 +19,7 @@ private:
   static constexpr auto* TMP_DIR = "tmp";
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
+  static constexpr auto* INC_DIR = "include";
 
   build_ctx();
   friend int ::main(int, char**);
@@ -28,7 +27,6 @@ private:
 public:
   ~build_ctx() = default;
 
-  toolchain& toolchain();
   asio::io_context& io_context();
 
   build_ctx& install(target& target);
@@ -61,11 +59,12 @@ private:
   void create_if_not_exists(fs::path path) const;
 
   target& find_target(std::string name);
-  int build_install_steps(std::string name, bool verbose = false);
+  int build_install_steps(toolchain& tc,
+                          std::string name,
+                          bool verbose = false);
   int list_targets() const;
 
 private:
-  std::unique_ptr<buildxx::toolchain> m_tc;
   asio::io_context m_io;
 
   std::vector<std::unique_ptr<target>> m_targets;

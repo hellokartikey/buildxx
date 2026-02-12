@@ -33,9 +33,8 @@ object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
           .build_step = &build_step};
 }
 
-binary unix_toolchain::link_cxx(build_ctx& ctx,
-                                std::string name,
-                                std::vector<object> objects) {
+binary
+unix_toolchain::link_cxx(build_ctx& ctx, std::string name, objects objects) {
   auto bin_file = ctx.bin() / name;
   auto& link_step = ctx.add_step(m_cxx, cxx_options(), {})
                         .add_option({"-o", bin_file.string()});

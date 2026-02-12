@@ -13,6 +13,8 @@ struct object {
   step* build_step;
 };
 
+using objects = std::vector<object>;
+
 struct binary {
   fs::path binary_file;
   std::vector<object> object_files;
@@ -26,7 +28,9 @@ public:
 
   virtual object build_cxx(build_ctx& ctx, fs::path source) = 0;
   virtual binary
-  link_cxx(build_ctx& ctx, std::string name, std::vector<object> objects) = 0;
+  link_cxx(build_ctx& ctx, std::string name, objects objects) = 0;
+
+  virtual toolchain& set_cxx_standard(cxx_std std) = 0;
 
   template <class T> T& add_cxx_option(this T& self, std::string option) {
     self.m_cxx_opts.push_back(std::move(option));

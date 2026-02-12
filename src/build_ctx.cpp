@@ -1,21 +1,19 @@
 #include "build_ctx.hpp"
 
 #include <print>
+#include <ranges>
 #include <stdexcept>
 
 #include <spdlog/spdlog.h>
 
+#include "cli.hpp"
 #include "phony.hpp"
-#include "unix_toolchain.hpp"
 
 namespace buildxx {
-build_ctx::build_ctx()
-    : m_tc(new unix_toolchain) {
+build_ctx::build_ctx() {
   auto& install = phony::add(*this, cli::INSTALL);
   install_step(install.final_step());
 }
-
-toolchain& build_ctx::toolchain() { return *m_tc; }
 
 asio::io_context& build_ctx::io_context() { return m_io; }
 
@@ -66,9 +64,7 @@ step& build_ctx::add_step(fs::path exe,
   return m_steps.emplace_front(exe, args, env);
 }
 
-step& build_ctx::add_phony() {
-  return m_steps.emplace_front("").phony(true);
-}
+step& build_ctx::add_phony() { return m_steps.emplace_front("").phony(true); }
 
 void build_ctx::create_if_not_exists(fs::path path) const {
   if (!fs::exists(path)) {
@@ -87,9 +83,11 @@ target& build_ctx::find_target(std::string name) {
   return *(*iter).get();
 }
 
-int build_ctx::build_install_steps(std::string name, bool verbose) {
+int build_ctx::build_install_steps(toolchain& tc,
+                                   std::string name,
+                                   bool verbose) {
   auto& build = find_target(name);
-  build.create_steps_with_deps(*this, *m_tc);
+  build.create_steps_with_deps(*this, tc);
   return build.final_step().run(*this, verbose);
 }
 
