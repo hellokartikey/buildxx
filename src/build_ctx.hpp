@@ -22,15 +22,12 @@ private:
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
 
-  static constexpr auto* INSTALL = "install";
-
   build_ctx();
   friend int ::main(int, char**);
 
 public:
   ~build_ctx() = default;
 
-  cli& cli();
   toolchain& toolchain();
   asio::io_context& io_context();
 
@@ -54,7 +51,7 @@ public:
     if (contains(m_targets, ptr->name(),
                  [](auto& ptr) { return ptr->name(); })) {
       throw std::runtime_error(
-          std::format("Target with name {} already exists.", ptr->name()));
+          std::format("target with name {} already exists.", ptr->name()));
     }
     m_targets.emplace_back(ptr);
     return *ptr;
@@ -63,11 +60,11 @@ public:
 private:
   void create_if_not_exists(fs::path path) const;
 
-  void build_install_steps();
-  void list_targets() const;
+  target& find_target(std::string name);
+  int build_install_steps(std::string name, bool verbose = false);
+  int list_targets() const;
 
 private:
-  buildxx::cli m_app;
   std::unique_ptr<buildxx::toolchain> m_tc;
   asio::io_context m_io;
 

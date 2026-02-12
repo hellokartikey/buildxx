@@ -11,11 +11,9 @@
 namespace buildxx {
 build_ctx::build_ctx()
     : m_tc(new unix_toolchain) {
-  auto& install = phony::add(*this, INSTALL);
+  auto& install = phony::add(*this, cli::INSTALL);
   install_step(install.final_step());
 }
-
-cli& build_ctx::cli() { return m_app; }
 
 toolchain& build_ctx::toolchain() { return *m_tc; }
 
@@ -69,7 +67,7 @@ step& build_ctx::add_step(fs::path exe,
 }
 
 step& build_ctx::add_phony() {
-  return m_steps.emplace_front(env::find_executable("true"));
+  return m_steps.emplace_front("").phony(true);
 }
 
 void build_ctx::create_if_not_exists(fs::path path) const {
@@ -78,14 +76,24 @@ void build_ctx::create_if_not_exists(fs::path path) const {
   }
 }
 
-void build_ctx::build_install_steps() {
-  m_targets.front()->create_steps_with_deps(*this, *m_tc);
-  for (auto& step : m_install) {
-    step->run(*this);
+target& build_ctx::find_target(std::string name) {
+  using namespace std::ranges;
+
+  auto iter = find(m_targets, name, [&](auto& ptr) { return ptr->name(); });
+  if (iter == m_targets.end()) {
+    throw std::runtime_error(std::format("target {} does not exist", name));
   }
+
+  return *(*iter).get();
 }
 
-void build_ctx::list_targets() const {
+int build_ctx::build_install_steps(std::string name, bool verbose) {
+  auto& build = find_target(name);
+  build.create_steps_with_deps(*this, *m_tc);
+  return build.final_step().run(*this, verbose);
+}
+
+int build_ctx::list_targets() const {
   using namespace std::ranges::views;
 
   for (const auto& [idx, ptr] : enumerate(m_targets)) {
@@ -95,6 +103,8 @@ void build_ctx::list_targets() const {
       std::println("{}", ptr->name());
     }
   }
+
+  return 0;
 }
 
 void build_ctx::install_step(step& step) { m_install.push_back(&step); }

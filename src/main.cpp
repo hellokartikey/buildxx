@@ -15,30 +15,31 @@ int main(int argc, char** argv) {
   spdlog::set_pattern("[%^%l%$] %v");
 
   try {
-    // 1. parse cli args
-    auto ctx = buildxx::build_ctx{};
+
+    // 1. initialize systems
+    buildxx::cli cli;
+    buildxx::build_ctx ctx;
 
     // 2. create build graph
     buildxx::build(ctx);
 
     // 3. parse cli options
-    CLI11_PARSE(ctx.cli(), argc, argv);
+    CLI11_PARSE(cli, argc, argv);
 
     // 4.1 list all targets
-    if (ctx.cli().list_targets()) {
-      ctx.list_targets();
-      return 0;
+    if (cli.list_targets()) {
+      return ctx.list_targets();
     }
 
     // 4.2 build default install step
-    ctx.build_install_steps();
+    return ctx.build_install_steps(cli.target(), cli.is_verbose());
 
   } catch (std::runtime_error& e) {
     spdlog::critical("buildxx error: {}", e.what());
     return 1;
   }
 
-  return 0;
+  return 1;
 }
 
 // clang-format off
@@ -47,11 +48,13 @@ void buildxx::build(build_ctx& ctx) {
 
   auto& echo =
      command::add(ctx, "echo_hello", "echo")
-    .add_option("Hello from build++");
+    .add_option("Hello from build++")
+    ;
 
   auto& echo_2 =
-     command::add(ctx, "echo_hello_2", "echo")
-    .add_option("Copy!");
+     command::add(ctx, "test", "echo")
+    .add_option("Copy!")
+    ;
 
   auto& test_app =
      executable::add(ctx, "test_app", test / "main.cpp")

@@ -1,5 +1,7 @@
 #include "step.hpp"
 
+#include <print>
+
 #include <spdlog/spdlog.h>
 
 #include "build_ctx.hpp"
@@ -9,6 +11,11 @@ step::step(fs::path exe, arguments args, environment_map env)
     : m_exe(exe)
     , m_args(args)
     , m_env(env) {}
+
+step& step::phony(bool is_phony) {
+  m_phony = is_phony;
+  return *this;
+}
 
 const step::arguments& step::options() const { return m_args; }
 
@@ -59,11 +66,15 @@ step& step::depends_on_first(step& other) {
 
 bool step::is_done() const { return m_rc != RC_NOT_EXEC; }
 
-int step::run(build_ctx& ctx) {
+int step::run(build_ctx& ctx, bool verbose) {
   for (auto* pre : m_pre) {
     if (!pre->is_done()) {
-      pre->run(ctx);
+      pre->run(ctx, verbose);
     }
+  }
+
+  if (m_phony) {
+    return 0;
   }
 
   environment_map env;
@@ -79,15 +90,18 @@ int step::run(build_ctx& ctx) {
     spdlog::info("{}", m_message);
   }
 
-  if (ctx.cli().is_verbose()) {
+  if (verbose) {
     std::stringstream ss;
-    ss << m_exe.string();
-    for (auto& arg : m_args) {
-      ss << arg;
-    }
-    ss << "\n";
 
-    spdlog::info("{}", ss.view());
+    ss.write(m_exe.c_str(), m_exe.size());
+    ss.put(' ');
+
+    for (auto& arg : m_args) {
+      ss.write(arg.c_str(), arg.size());
+      ss.put(' ');
+    }
+
+    std::println("{}", ss.view());
   }
 
   proc::process p(ctx.io_context(), m_exe, m_args,

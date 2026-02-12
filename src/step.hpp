@@ -21,11 +21,13 @@ public:
   step(fs::path exe, arguments args = {}, environment_map = {});
   ~step() = default;
 
+  step& phony(bool is_phony = true);
+
   step& depends_on(step& other);
   step& depends_on_first(step& other);
 
   bool is_done() const;
-  int run(build_ctx& ctx);
+  int run(build_ctx& ctx, bool verbose = false);
 
   const arguments& options() const;
   step& add_option(std::string option);
@@ -48,6 +50,8 @@ private:
   int m_rc = RC_NOT_EXEC;
 
   std::string m_message;
+
+  bool m_phony{};
 };
 } // namespace buildxx
 
