@@ -21,6 +21,8 @@ struct binary {
   step* link_step;
 };
 
+enum class cxx_std { cxx98, cxx11, cxx14, cxx17, cxx20, cxx23, cxx26 };
+
 class toolchain {
 public:
   toolchain() {}

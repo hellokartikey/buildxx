@@ -17,6 +17,8 @@ public:
   object build_cxx(build_ctx& ctx, fs::path src) override;
   binary link_cxx(build_ctx& ctx, std::string name, objects objects) override;
 
+  unix_toolchain& set_cxx_standard(cxx_std std) override;
+
 private:
   fs::path m_cc;
   fs::path m_cxx;

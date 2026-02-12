@@ -46,7 +46,9 @@ int main(int argc, char** argv) {
 }
 
 // clang-format off
-void buildxx::build(build_ctx& ctx) {
+void buildxx::build(build_ctx& ctx, toolchain& tc) {
+  tc.set_cxx_standard(cxx_std::cxx23);
+
   auto test = ctx.sub_directory("test");
 
   auto& echo =

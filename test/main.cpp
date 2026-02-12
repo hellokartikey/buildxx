@@ -1,9 +1,9 @@
-#include <iostream>
+#include <print>
 
 #include "foo.hpp"
 
 int main() {
   foo();
-  std::cout << "Hello, World!\n";
+  std::println("Hello, World!");
   return 0;
 }

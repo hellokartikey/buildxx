@@ -49,4 +49,37 @@ unix_toolchain::link_cxx(build_ctx& ctx, std::string name, objects objects) {
           .object_files = objects,
           .link_step = &link_step};
 }
+
+unix_toolchain& unix_toolchain::set_cxx_standard(cxx_std std) {
+  using enum cxx_std;
+
+  int std_num = 0;
+  switch (std) {
+  case cxx98:
+    add_cxx_option("-std=c++98");
+    break;
+  case cxx11:
+    add_cxx_option("-std=c++11");
+    break;
+  case cxx14:
+    add_cxx_option("-std=c++14");
+    break;
+  case cxx17:
+    add_cxx_option("-std=c++17");
+    break;
+  case cxx20:
+    add_cxx_option("-std=c++20");
+    break;
+  case cxx23:
+    add_cxx_option("-std=c++23");
+    break;
+  case cxx26:
+    add_cxx_option("-std=c++26");
+    break;
+  default:
+    throw std::runtime_error("incorrect c++ standard");
+  }
+
+  return *this;
+}
 } // namespace buildxx
