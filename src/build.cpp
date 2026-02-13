@@ -22,6 +22,7 @@ void buildxx::build(build_ctx& ctx, toolchain& tc) {
       )
       .link(
         ctx.target<library>("foo")
+          .linkage(link::shared)
           .source(test / "foo.cpp")
       )
   );

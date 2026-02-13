@@ -35,22 +35,30 @@ using archives = std::vector<archive>;
 
 class toolchain {
 public:
-  static constexpr std::format_string<const std::string&> CXX_OBJ =
-      "Building C++ object {}";
-  static constexpr std::format_string<const std::string&> CXX_LINK =
-      "Linking C++ executable {}";
-  static constexpr std::format_string<const std::string&> CXX_AR =
-      "Linking C++ archive {}";
+  using fmt = std::format_string<const std::string&>;
+  static constexpr fmt CXX_OBJ = "Building C++ object {}";
+  static constexpr fmt CXX_LINK = "Linking C++ executable {}";
+  static constexpr fmt CXX_AR = "Linking C++ archive {}";
+  static constexpr fmt CXX_SO = "Linking C++ library {}";
 
   toolchain() {}
   virtual ~toolchain() = default;
 
   virtual object build_cxx(build_ctx& ctx, fs::path source) = 0;
+  objects build_cxx(build_ctx& ctx, std::vector<fs::path> sources);
+
+  virtual object build_cxx_shared(build_ctx& ctx, fs::path source) = 0;
+  objects build_cxx_shared(build_ctx& ctx, std::vector<fs::path> sources);
 
   virtual binary link_cxx(build_ctx& ctx,
                           std::string name,
                           objects objects,
                           archives archives) = 0;
+
+  virtual archive link_cxx_shared(build_ctx& ctx,
+                                  std::string name,
+                                  objects objects,
+                                  archives archives) = 0;
 
   virtual archive ar_cxx(build_ctx& ctx,
                          std::string name,
@@ -60,14 +68,14 @@ public:
   virtual toolchain& set_cxx_standard(cxx_std std) = 0;
 
 public:
-  template <class T> T& add_cxx_option(this T& self, std::string option) {
-    self.m_cxx_opts.push_back(std::move(option));
+  template <class T> T& cxx_flag(this T& self, std::string option) {
+    self.m_cxx_flags.push_back(option);
     return self;
   }
 
-  template <class T> T& add_cxx_options(this T& self, step::arguments options) {
+  template <class T> T& cxx_flags(this T& self, step::arguments options) {
     for (auto& option : options) {
-      self.add_cxx_option(std::move(option));
+      self.cxx_flag(option);
     }
     return self;
   }
@@ -84,11 +92,14 @@ public:
     return self;
   }
 
-  step::arguments cxx_options(step::arguments options = {});
-  step::arguments ar_options(step::arguments options = {});
+  step::arguments cxx_options(step::arguments flags = {});
+  step::arguments ar_options(step::arguments flags = {});
 
 private:
-  step::arguments m_cxx_opts;
+  step::arguments m_cxx_flags;
+  step::arguments m_cxx_define;
+  step::arguments m_cxx_include;
+
   step::arguments m_ar_opts;
 };
 } // namespace buildxx

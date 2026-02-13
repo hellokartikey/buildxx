@@ -58,8 +58,8 @@ fs::path build_ctx::lib() const {
   return path;
 }
 
-fs::path build_ctx::tmp() const {
-  auto path = prefix() / TMP_DIR;
+fs::path build_ctx::tmp(fs::path p) const {
+  auto path = prefix() / TMP_DIR / p;
 
   create_if_not_exists(path);
 
@@ -76,7 +76,7 @@ step& build_ctx::add_phony() { return m_steps.emplace_front("").phony(true); }
 
 void build_ctx::create_if_not_exists(fs::path path) const {
   if (!fs::exists(path)) {
-    fs::create_directory(path);
+    fs::create_directories(path);
   }
 }
 

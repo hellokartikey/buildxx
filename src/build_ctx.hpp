@@ -37,7 +37,7 @@ public:
 
   fs::path bin() const;
   fs::path lib() const;
-  fs::path tmp() const;
+  fs::path tmp(fs::path path) const;
 
   step& add_step(fs::path exe, step::arguments args, step::environment_map env);
   step& add_phony();
