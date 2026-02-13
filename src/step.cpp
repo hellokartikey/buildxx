@@ -17,36 +17,36 @@ step& step::phony(bool is_phony) {
   return *this;
 }
 
-const step::arguments& step::options() const { return m_args; }
+const step::arguments& step::get_options() const { return m_args; }
 
-step& step::add_option(std::string option) {
+step& step::option(std::string option) {
   m_args.emplace_back(std::move(option));
   return *this;
 }
 
-step& step::add_option(arguments options) {
-  for (auto& option : options) {
-    add_option(std::move(option));
+step& step::options(arguments options) {
+  for (auto& opt : options) {
+    option(opt);
   }
 
   return *this;
 }
 
-const std::string& step::message() const { return m_message; }
+const std::string& step::get_message() const { return m_message; }
 
-step& step::add_message(std::string message) {
+step& step::message(std::string message) {
   m_message = std::move(message);
   return *this;
 }
 
-const step::environment_map& step::environment() const { return m_env; }
+const step::environment_map& step::get_environment() const { return m_env; }
 
-step& step::add_environment(env::key k, env::value v) {
+step& step::environment(env::key k, env::value v) {
   m_env[k] = v;
   return *this;
 }
 
-step& step::add_environment(environment_map environment) {
+step& step::environment(environment_map environment) {
   for (auto& [k, v] : environment) {
     m_env[k] = v;
   }

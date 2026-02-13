@@ -55,7 +55,7 @@ command& command::message(std::string message) {
 
 void command::create_steps(build_ctx& ctx, toolchain& tc) {
   auto& step = ctx.add_step(m_exe, m_argv, m_env)
-                   .add_message(std::format("Running command {}", name()));
+                   .message(std::format("Running command {}", name()));
   final_step().depends_on(step);
 }
 } // namespace buildxx

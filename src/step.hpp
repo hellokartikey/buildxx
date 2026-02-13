@@ -29,16 +29,16 @@ public:
   bool is_done() const;
   int run(build_ctx& ctx, bool verbose = false);
 
-  const arguments& options() const;
-  step& add_option(std::string option);
-  step& add_option(arguments options);
+  const arguments& get_options() const;
+  step& option(std::string option);
+  step& options(arguments options);
 
-  const std::string& message() const;
-  step& add_message(std::string message);
+  const std::string& get_message() const;
+  step& message(std::string message);
 
-  const environment_map& environment() const;
-  step& add_environment(env::key key, env::value value);
-  step& add_environment(environment_map env);
+  const environment_map& get_environment() const;
+  step& environment(env::key key, env::value value);
+  step& environment(environment_map env);
 
 private:
   fs::path m_exe;

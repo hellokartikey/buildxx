@@ -50,6 +50,14 @@ fs::path build_ctx::bin() const {
   return path;
 }
 
+fs::path build_ctx::lib() const {
+  auto path = prefix() / LIB_DIR;
+
+  create_if_not_exists(path);
+
+  return path;
+}
+
 fs::path build_ctx::tmp() const {
   auto path = prefix() / TMP_DIR;
 

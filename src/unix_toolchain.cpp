@@ -22,32 +22,38 @@ object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
   // 2. compile object step
   auto& build_step =
       ctx.add_step(m_cxx, cxx_options({"-x", "c++"}), {})
-          .add_option("-c")
-          .add_option(src.string())
-          .add_option({"-o", obj_file.string()})
-          .add_message(std::format("Building C++ object {}",
-                                   fs::relative(obj_file).string()));
+          .option("-c")
+          .option(src.string())
+          .options({"-o", obj_file.string()})
+          .message(std::format(CXX_OBJ, obj_file.relative_path().string()));
 
   return {.object_file = obj_file,
           .source_file = src_file,
           .build_step = &build_step};
 }
 
-binary
-unix_toolchain::link_cxx(build_ctx& ctx, std::string name, objects objects) {
+binary unix_toolchain::link_cxx(build_ctx& ctx,
+                                std::string name,
+                                objects objects,
+                                archives archives) {
+  // 1. create link step
   auto bin_file = ctx.bin() / name;
   auto& link_step = ctx.add_step(m_cxx, cxx_options(), {})
-                        .add_option({"-o", bin_file.string()});
+                        .options({"-o", bin_file.string()})
+                        .message(std::format(
+                            CXX_LINK, bin_file.relative_path().string()));
 
+  // 2. add object dependencies
   for (auto& obj : objects) {
-    link_step.add_option(obj.object_file.string())
-        .depends_on(*obj.build_step)
-        .add_message(std::format("Linking C++ executable {}", name));
+    link_step.option(obj.object_file.string()).depends_on(*obj.build_step);
   }
 
-  return {.binary_file = bin_file,
-          .object_files = objects,
-          .link_step = &link_step};
+  // 3. add library dependencies
+  for (auto& ar : archives) {
+    link_step.option(ar.archive_file.string()).depends_on(*ar.archive_step);
+  }
+
+  return {.binary_file = bin_file, .link_step = &link_step};
 }
 
 unix_toolchain& unix_toolchain::set_cxx_standard(cxx_std std) {
