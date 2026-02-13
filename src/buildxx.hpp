@@ -6,6 +6,7 @@
 
 #include "command.hpp"
 #include "executable.hpp"
+#include "library.hpp"
 #include "phony.hpp"
 
 namespace buildxx {

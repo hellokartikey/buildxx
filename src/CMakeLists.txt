@@ -13,6 +13,7 @@ PRIVATE
   phony.cpp
   command.cpp
   executable.cpp
+  library.cpp
 
   toolchain.cpp
   unix_toolchain.cpp

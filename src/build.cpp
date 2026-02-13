@@ -13,12 +13,16 @@ void buildxx::build(build_ctx& ctx, toolchain& tc) {
 
   ctx.install(
     ctx.target<executable>("test_app")
-      .sources(test, { "main.cpp", "foo.cpp" })
+      .sources(test, { "main.cpp" })
       .depends_on(
         ctx.target<command>("printenv")
           .executable("printenv")
           .environment("BUILDXX", "build++")
           .option("BUILDXX")
+      )
+      .link(
+        ctx.target<library>("foo")
+          .source(test / "foo.cpp")
       )
   );
 }

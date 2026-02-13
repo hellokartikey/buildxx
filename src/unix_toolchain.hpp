@@ -21,11 +21,17 @@ public:
                   objects objects,
                   archives archives) override;
 
+  archive ar_cxx(build_ctx& ctx,
+                 std::string name,
+                 objects objects,
+                 archives archives) override;
+
   unix_toolchain& set_cxx_standard(cxx_std std) override;
 
 private:
   fs::path m_cxx;
-  fs::path m_ld;
+  fs::path m_cc;
+  fs::path m_ar;
 };
 } // namespace buildxx
 

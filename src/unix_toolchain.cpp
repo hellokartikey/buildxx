@@ -7,6 +7,7 @@ unix_toolchain::unix_toolchain(std::string prefix)
     : toolchain() {
   m_cc = env::find_executable(prefix + "cc");
   m_cxx = env::find_executable(prefix + "c++");
+  m_ar = env::find_executable(prefix + "ar");
 }
 
 object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
@@ -54,6 +55,30 @@ binary unix_toolchain::link_cxx(build_ctx& ctx,
   }
 
   return {.binary_file = bin_file, .link_step = &link_step};
+}
+
+archive unix_toolchain::ar_cxx(build_ctx& ctx,
+                               std::string name,
+                               objects objects,
+                               archives archives) {
+  // 1. create archive step
+  auto ar_file = ctx.lib() / std::format("lib{}.a", name);
+  auto& ar_step =
+      ctx.add_step(m_ar, ar_options({"qc"}), {})
+          .options({"-o", ar_file.string()})
+          .message(std::format(CXX_AR, ar_file.relative_path().string()));
+
+  // 2. add object dependencies
+  for (auto& obj : objects) {
+    ar_step.option(obj.object_file.string()).depends_on(*obj.build_step);
+  }
+
+  // 3. add library dependencies
+  for (auto& ar : archives) {
+    ar_step.option(ar.archive_file.string()).depends_on(*ar.archive_step);
+  }
+
+  return {.archive_file = ar_file, .archive_step = &ar_step};
 }
 
 unix_toolchain& unix_toolchain::set_cxx_standard(cxx_std std) {
