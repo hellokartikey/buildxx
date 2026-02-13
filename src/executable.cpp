@@ -6,16 +6,23 @@ namespace buildxx {
 executable::executable(build_ctx& ctx, std::string name)
     : target(ctx, name) {}
 
-auto executable::sources() const -> const source_files& { return m_files; }
+auto executable::get_sources() const -> const source_files& { return m_files; }
 
-executable& executable::add_source(fs::path file) {
+executable& executable::source(fs::path file) {
   m_files.push_back(std::move(file));
   return *this;
 }
 
-executable& executable::add_source(fs::path prefix, source_files files) {
+executable& executable::sources(fs::path prefix, source_files files) {
   for (auto& file : files) {
-    add_source(prefix / file);
+    source(prefix / file);
+  }
+  return *this;
+}
+
+executable& executable::sources(source_files files) {
+  for (auto& file : files) {
+    source(file);
   }
   return *this;
 }

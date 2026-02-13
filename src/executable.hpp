@@ -12,12 +12,12 @@ public:
   executable(build_ctx& ctx, std::string name);
   ~executable() override = default;
 
-  static executable& add(build_ctx& ctx, std::string name, fs::path entry);
+  const source_files& get_sources() const;
+  executable& source(fs::path file);
+  executable& sources(source_files files);
+  executable& sources(fs::path prefix, source_files files);
 
-  const source_files& sources() const;
-  executable& add_source(fs::path file);
-  executable& add_source(fs::path prefix, source_files files);
-
+private:
   void create_steps(build_ctx& ctx, toolchain& tc) override;
 
 private:

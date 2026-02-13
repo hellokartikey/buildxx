@@ -10,19 +10,19 @@ public:
   command(build_ctx& ctx, std::string name);
   ~command() = default;
 
-  const fs::path& executable() const;
-  command& add_executable(std::string name);
+  const fs::path& get_executable() const;
+  command& executable(std::string name);
 
-  const step::arguments& options() const;
-  command& add_option(std::string option);
-  command& add_option(step::arguments options);
+  const step::arguments& get_options() const;
+  command& option(std::string option);
+  command& options(step::arguments options);
 
-  const step::environment_map& environment() const;
-  command& add_environment(env::key key, env::value value);
-  command& add_environment(step::environment_map environment);
+  const step::environment_map& get_environment() const;
+  command& environment(env::key key, env::value value);
+  command& environment(step::environment_map environment);
 
-  const std::string& message() const;
-  command& add_message(std::string msg);
+  const std::string& get_message() const;
+  command& message(std::string msg);
 
 private:
   void create_steps(build_ctx& ctx, toolchain& tc) override;

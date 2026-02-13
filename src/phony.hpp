@@ -11,6 +11,7 @@ public:
   phony(build_ctx& ctx, std::string name);
   ~phony() override = default;
 
+private:
   void create_steps(build_ctx& ctx, toolchain& tc) override;
 };
 } // namespace buildxx

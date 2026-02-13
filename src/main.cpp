@@ -2,10 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include "build_ctx.hpp"
 #include "cli.hpp"
-#include "command.hpp"
-#include "executable.hpp"
+#include "build_ctx.hpp"
 #include "unix_toolchain.hpp"
 
 namespace buildxx {
@@ -44,31 +42,3 @@ int main(int argc, char** argv) {
 
   return 1;
 }
-
-// clang-format off
-void buildxx::build(build_ctx& ctx, toolchain& tc) {
-  tc.set_cxx_standard(cxx_std::cxx23);
-
-  auto& echo =
-     ctx.add_target<command>("echo")
-    .add_executable("echo")
-    .add_option("Hello from build++")
-    ;
-
-  auto& echo_2 =
-     ctx.add_target<command>("echo2")
-    .add_executable("echo")
-    .add_option("Copy!")
-    ;
-
-  auto test = ctx.sub_directory("test");
-
-  auto& test_app =
-    ctx.add_target<executable>("test_app")
-    .add_source(test, { "main.cpp", "foo.cpp" })
-    .depends_on(echo);
-    ;
-
-  ctx.install(test_app);
-}
-// clang-format on

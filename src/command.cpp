@@ -6,9 +6,9 @@ namespace buildxx {
 command::command(build_ctx& ctx, std::string name)
     : target(ctx, name) {}
 
-const fs::path& command::executable() const { return m_exe; }
+const fs::path& command::get_executable() const { return m_exe; }
 
-command& command::add_executable(std::string name) {
+command& command::executable(std::string name) {
   m_exe = env::find_executable(name);
 
   if (!fs::exists(m_exe)) {
@@ -19,28 +19,36 @@ command& command::add_executable(std::string name) {
   return *this;
 }
 
-command& command::add_option(std::string option) {
+command& command::option(std::string option) {
   m_argv.emplace_back(std::move(option));
   return *this;
 }
 
-command& command::add_option(step::arguments options) {
-  for (auto& option : options) {
-    add_option(std::move(option));
+command& command::options(step::arguments options) {
+  for (auto& option_v : options) {
+    option(std::move(option_v));
   }
   return *this;
 }
 
-const step::environment_map& command::environment() const { return m_env; }
+const step::environment_map& command::get_environment() const { return m_env; }
 
-command& command::add_environment(env::key key, env::value value) {
+command& command::environment(env::key key, env::value value) {
   m_env[key] = value;
   return *this;
 }
 
-const std::string& command::message() const { return m_msg; }
+command& command::environment(step::environment_map env) {
+  for (auto& [k, v] : env) {
+    environment(k, v);
+  }
 
-command& command::add_message(std::string message) {
+  return *this;
+}
+
+const std::string& command::get_message() const { return m_msg; }
+
+command& command::message(std::string message) {
   m_msg = std::move(message);
   return *this;
 }

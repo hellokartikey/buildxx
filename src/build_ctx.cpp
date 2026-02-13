@@ -11,13 +11,13 @@
 
 namespace buildxx {
 build_ctx::build_ctx() {
-  auto& install = add_target<phony>(cli::INSTALL);
+  auto& install = target<phony>(cli::INSTALL);
   install_step(install.final_step());
 }
 
 asio::io_context& build_ctx::io_context() { return m_io; }
 
-build_ctx& build_ctx::install(target& target) {
+build_ctx& build_ctx::install(class target& target) {
   m_targets.front()->depends_on(target);
   return *this;
 }

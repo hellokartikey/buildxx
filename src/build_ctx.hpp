@@ -29,7 +29,7 @@ public:
 
   asio::io_context& io_context();
 
-  build_ctx& install(target& target);
+  build_ctx& install(class target& target);
 
   fs::path prefix() const;
   fs::path directory() const;
@@ -44,8 +44,8 @@ public:
   void install_step(step& step);
 
   template <class T>
-    requires(std::derived_from<T, target>)
-  T& add_target(std::string name) {
+    requires(std::derived_from<T, class target>)
+  T& target(std::string name) {
     using namespace std::ranges;
 
     if (contains(m_targets, name, [](auto& ptr) { return ptr->name(); })) {
@@ -60,7 +60,7 @@ public:
 private:
   void create_if_not_exists(fs::path path) const;
 
-  target& find_target(std::string name);
+  class target& find_target(std::string name);
   int build_install_steps(toolchain& tc,
                           std::string name,
                           bool verbose = false);
@@ -69,7 +69,7 @@ private:
 private:
   asio::io_context m_io;
 
-  std::vector<std::unique_ptr<target>> m_targets;
+  std::vector<std::unique_ptr<class target>> m_targets;
   std::list<step> m_steps;
   std::vector<step*> m_install;
 };

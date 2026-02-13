@@ -1,0 +1,15 @@
+#ifndef HK_BUILDXX_BUILDXX_HPP
+#define HK_BUILDXX_BUILDXX_HPP
+
+#include "build_ctx.hpp"
+#include "toolchain.hpp"
+
+#include "command.hpp"
+#include "executable.hpp"
+#include "phony.hpp"
+
+namespace buildxx {
+void build(build_ctx& ctx, toolchain& tc);
+}
+
+#endif
