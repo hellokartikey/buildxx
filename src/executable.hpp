@@ -6,12 +6,10 @@
 
 namespace buildxx {
 class executable : public target {
-private:
-  executable(build_ctx& ctx, std::string name, fs::path entry);
-
 public:
   using source_files = std::vector<fs::path>;
 
+  executable(build_ctx& ctx, std::string name);
   ~executable() override = default;
 
   static executable& add(build_ctx& ctx, std::string name, fs::path entry);

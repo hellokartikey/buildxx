@@ -49,21 +49,23 @@ int main(int argc, char** argv) {
 void buildxx::build(build_ctx& ctx, toolchain& tc) {
   tc.set_cxx_standard(cxx_std::cxx23);
 
-  auto test = ctx.sub_directory("test");
-
   auto& echo =
-     command::add(ctx, "echo_hello", "echo")
+     ctx.add_target<command>("echo")
+    .add_executable("echo")
     .add_option("Hello from build++")
     ;
 
   auto& echo_2 =
-     command::add(ctx, "test", "echo")
+     ctx.add_target<command>("echo2")
+    .add_executable("echo")
     .add_option("Copy!")
     ;
 
+  auto test = ctx.sub_directory("test");
+
   auto& test_app =
-     executable::add(ctx, "test_app", test / "main.cpp")
-    .add_source(test, { "foo.cpp" })
+    ctx.add_target<executable>("test_app")
+    .add_source(test, { "main.cpp", "foo.cpp" })
     .depends_on(echo);
     ;
 

@@ -11,7 +11,7 @@
 
 namespace buildxx {
 build_ctx::build_ctx() {
-  auto& install = phony::add(*this, cli::INSTALL);
+  auto& install = add_target<phony>(cli::INSTALL);
   install_step(install.final_step());
 }
 

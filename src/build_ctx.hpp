@@ -43,16 +43,18 @@ public:
   step& add_phony();
   void install_step(step& step);
 
-  template <std::derived_from<target> T> T& add_target(T* ptr) {
+  template <class T>
+    requires(std::derived_from<T, target>)
+  T& add_target(std::string name) {
     using namespace std::ranges;
 
-    if (contains(m_targets, ptr->name(),
-                 [](auto& ptr) { return ptr->name(); })) {
+    if (contains(m_targets, name, [](auto& ptr) { return ptr->name(); })) {
       throw std::runtime_error(
-          std::format("target with name {} already exists.", ptr->name()));
+          std::format("target with name {} already exists.", name));
     }
-    m_targets.emplace_back(ptr);
-    return *ptr;
+
+    return static_cast<T&>(
+        *m_targets.emplace_back(std::make_unique<T>(*this, name)));
   }
 
 private:

@@ -3,13 +3,8 @@
 #include "build_ctx.hpp"
 
 namespace buildxx {
-executable::executable(build_ctx& ctx, std::string name, fs::path entry)
-    : target(ctx, name)
-    , m_files({entry}) {}
-
-executable& executable::add(build_ctx& ctx, std::string name, fs::path entry) {
-  return ctx.add_target(new executable(ctx, name, entry));
-}
+executable::executable(build_ctx& ctx, std::string name)
+    : target(ctx, name) {}
 
 auto executable::sources() const -> const source_files& { return m_files; }
 

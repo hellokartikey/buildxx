@@ -3,27 +3,20 @@
 #include "build_ctx.hpp"
 
 namespace buildxx {
-command::command(build_ctx& ctx,
-                 std::string name,
-                 std::string exe,
-                 step::arguments args,
-                 step::environment_map env)
-    : target(ctx, name)
-    , m_exe(env::find_executable(exe))
-    , m_argv(args)
-    , m_env(env) {
+command::command(build_ctx& ctx, std::string name)
+    : target(ctx, name) {}
+
+const fs::path& command::executable() const { return m_exe; }
+
+command& command::add_executable(std::string name) {
+  m_exe = env::find_executable(name);
+
   if (!fs::exists(m_exe)) {
     throw std::runtime_error(
-        std::format("cannot find executable {} in PATH", exe));
+        std::format("cannot find executable {} in PATH", name));
   }
-}
 
-command& command::add(build_ctx& ctx,
-                      std::string name,
-                      std::string exe,
-                      step::arguments args,
-                      step::environment_map env) {
-  return ctx.add_target(new command(ctx, name, exe, args, env));
+  return *this;
 }
 
 command& command::add_option(std::string option) {
