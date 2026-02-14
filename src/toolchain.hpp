@@ -47,9 +47,6 @@ public:
   virtual object build_cxx(build_ctx& ctx, fs::path source) = 0;
   objects build_cxx(build_ctx& ctx, std::vector<fs::path> sources);
 
-  virtual object build_cxx_shared(build_ctx& ctx, fs::path source) = 0;
-  objects build_cxx_shared(build_ctx& ctx, std::vector<fs::path> sources);
-
   virtual binary link_cxx(build_ctx& ctx,
                           std::string name,
                           objects objects,
@@ -66,6 +63,8 @@ public:
                          archives archives) = 0;
 
   virtual toolchain& cxx_standard(cxx_std std) = 0;
+
+  virtual toolchain& include(fs::path path) = 0;
 
 public:
   template <class T> T& cxx_flag(this T& self, std::string option) {

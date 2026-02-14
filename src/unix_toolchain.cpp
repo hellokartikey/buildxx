@@ -18,20 +18,14 @@ object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
   // 1. compile object step
   auto& build_step =
       ctx.add_step(m_cxx,
-                   cxx_options({"-x", "c++", "-c", "-o", obj_file.string(),
-                                src.string()}),
+                   cxx_options({"-x", "c++", "-fPIC", "-c", "-o",
+                                obj_file.string(), src.string()}),
                    {})
           .message(std::format(CXX_OBJ, fs::relative(obj_file).string()));
 
   return {.object_file = obj_file,
           .source_file = src_file,
           .build_step = &build_step};
-}
-
-object unix_toolchain::build_cxx_shared(build_ctx& ctx, fs::path src) {
-  auto obj = build_cxx(ctx, src);
-  obj.build_step->option("-fPIC");
-  return obj;
 }
 
 binary unix_toolchain::link_cxx(build_ctx& ctx,

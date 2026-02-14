@@ -15,7 +15,6 @@ public:
   ~unix_toolchain() override = default;
 
   object build_cxx(build_ctx& ctx, fs::path src) override;
-  object build_cxx_shared(build_ctx& ctx, fs::path src) override;
 
   binary link_cxx(build_ctx& ctx,
                   std::string name,

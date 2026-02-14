@@ -31,7 +31,7 @@ void library::create_steps(build_ctx& ctx, toolchain& tc) {
     m_archive = tc.ar_cxx(ctx, name(), objects, archives);
     break;
   case link::shared:
-    objects = tc.build_cxx_shared(ctx, m_files);
+    objects = tc.build_cxx(ctx, m_files);
     m_archive = tc.link_cxx_shared(ctx, name(), objects, archives);
     break;
   default:

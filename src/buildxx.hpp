@@ -8,7 +8,6 @@
 #include "executable.hpp"
 #include "library.hpp"
 #include "phony.hpp"
-#include "step.hpp"
 
 namespace buildxx {
 void build(build_ctx& ctx, toolchain& tc);
