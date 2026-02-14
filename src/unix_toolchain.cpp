@@ -21,7 +21,7 @@ object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
                    cxx_options({"-x", "c++", "-c", "-o", obj_file.string(),
                                 src.string()}),
                    {})
-          .message(std::format(CXX_OBJ, obj_file.relative_path().string()));
+          .message(std::format(CXX_OBJ, fs::relative(obj_file).string()));
 
   return {.object_file = obj_file,
           .source_file = src_file,
@@ -42,7 +42,7 @@ binary unix_toolchain::link_cxx(build_ctx& ctx,
   auto bin_file = ctx.bin() / name;
   auto& link_step =
       ctx.add_step(m_cxx, cxx_options({"-o", bin_file.string()}), {})
-          .message(std::format(CXX_LINK, bin_file.relative_path().string()));
+          .message(std::format(CXX_LINK, fs::relative(bin_file).string()));
 
   // 2. add object dependencies
   for (auto& obj : objects) {
@@ -65,7 +65,7 @@ archive unix_toolchain::link_cxx_shared(build_ctx& ctx,
   auto so_file = ctx.lib() / std::format("lib{}.so", name);
   auto& link_step =
       ctx.add_step(m_cxx, cxx_options({"-shared", "-o", so_file.string()}), {})
-          .message(std::format(CXX_SO, so_file.relative_path().string()));
+          .message(std::format(CXX_SO, fs::relative(so_file).string()));
 
   // 2. add object dependencies
   for (auto& obj : objects) {
@@ -90,7 +90,7 @@ archive unix_toolchain::ar_cxx(build_ctx& ctx,
   auto ar_file = ctx.lib() / std::format("lib{}.a", name);
   auto& ar_step =
       ctx.add_step(m_ar, ar_options({"qc", "-o", ar_file.string()}), {})
-          .message(std::format(CXX_AR, ar_file.relative_path().string()));
+          .message(std::format(CXX_AR, fs::relative(ar_file).string()));
 
   // 2. add object dependencies
   for (auto& obj : objects) {
@@ -107,7 +107,7 @@ archive unix_toolchain::ar_cxx(build_ctx& ctx,
           .linkage = link::archive};
 }
 
-unix_toolchain& unix_toolchain::set_cxx_standard(cxx_std std) {
+unix_toolchain& unix_toolchain::cxx_standard(cxx_std std) {
   using enum cxx_std;
 
   int std_num = 0;

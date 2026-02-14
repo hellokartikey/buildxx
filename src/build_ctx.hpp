@@ -21,7 +21,7 @@ private:
   static constexpr auto* LIB_DIR = "lib";
   static constexpr auto* INC_DIR = "include";
 
-  build_ctx();
+  build_ctx(std::string build_script);
   friend int ::main(int, char**);
 
 public:
@@ -33,7 +33,7 @@ public:
 
   fs::path prefix() const;
   fs::path directory() const;
-  fs::path sub_directory(std::string directory) const;
+  fs::path sub_directory(std::string directory = "") const;
 
   fs::path bin() const;
   fs::path lib() const;
@@ -61,6 +61,7 @@ private:
   void create_if_not_exists(fs::path path) const;
 
   class target& find_target(std::string name);
+  fs::path build_script(toolchain& tc, bool verbose = false);
   int build_install_steps(toolchain& tc,
                           std::string name,
                           bool verbose = false);
@@ -68,6 +69,8 @@ private:
 
 private:
   asio::io_context m_io;
+
+  std::string m_build_script;
 
   std::vector<std::unique_ptr<class target>> m_targets;
   std::list<step> m_steps;

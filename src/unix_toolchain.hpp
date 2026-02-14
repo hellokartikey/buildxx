@@ -32,7 +32,7 @@ public:
                  objects objects,
                  archives archives) override;
 
-  unix_toolchain& set_cxx_standard(cxx_std std) override;
+  unix_toolchain& cxx_standard(cxx_std std) override;
 
 private:
   fs::path m_cxx;

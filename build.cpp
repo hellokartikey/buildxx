@@ -1,8 +1,8 @@
-#include "buildxx.hpp"
+#include "src/buildxx.hpp"
 
 // clang-format off
 void buildxx::build(build_ctx& ctx, toolchain& tc) {
-  tc.set_cxx_standard(cxx_std::cxx23);
+  tc.cxx_standard(cxx_std::cxx23);
 
   ctx.target<command>("echo2")
     .executable("echo")

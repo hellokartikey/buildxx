@@ -7,11 +7,18 @@
 #include <spdlog/spdlog.h>
 
 #include "cli.hpp"
+#include "library.hpp"
 #include "phony.hpp"
 
 namespace buildxx {
-build_ctx::build_ctx() {
+build_ctx::build_ctx(std::string build_script)
+    : m_build_script(build_script) {
   auto& install = target<phony>(cli::INSTALL);
+
+  auto& script = target<library>(m_build_script)
+                     .linkage(link::shared)
+                     .source(sub_directory() / build_script);
+
   install_step(install.final_step());
 }
 
@@ -89,6 +96,15 @@ target& build_ctx::find_target(std::string name) {
   }
 
   return *(*iter).get();
+}
+
+fs::path build_ctx::build_script(toolchain& tc, bool verbose) {
+  auto& script = static_cast<library&>(find_target(m_build_script));
+
+  script.create_steps_with_deps(*this, tc);
+  script.final_step().run(*this, verbose);
+
+  return script.artifact().value().archive_file;
 }
 
 int build_ctx::build_install_steps(toolchain& tc,

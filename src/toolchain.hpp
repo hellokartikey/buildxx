@@ -65,7 +65,7 @@ public:
                          objects objects,
                          archives archives) = 0;
 
-  virtual toolchain& set_cxx_standard(cxx_std std) = 0;
+  virtual toolchain& cxx_standard(cxx_std std) = 0;
 
 public:
   template <class T> T& cxx_flag(this T& self, std::string option) {
@@ -89,6 +89,15 @@ public:
     for (auto& option : options) {
       self.add_ar_option(std::move(option));
     }
+    return self;
+  }
+
+  template <class T> T& reset(this T& self) {
+    self.m_cxx_flags.clear();
+    self.m_cxx_define.clear();
+    self.m_cxx_include.clear();
+    self.m_ar_opts.clear();
+
     return self;
   }
 
