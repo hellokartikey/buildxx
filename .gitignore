@@ -1,9 +1,10 @@
-bxx-out/
-
+.cache/
 cmake/
 build/
 
-.cache/
+bxx-out/
 .bxx-cache/
+
+prefix/
 
 compile_commands.json

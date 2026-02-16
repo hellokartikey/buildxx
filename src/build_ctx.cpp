@@ -11,6 +11,12 @@
 #include "phony.hpp"
 
 namespace buildxx {
+void create_if_not_exists(fs::path path) {
+  if (!fs::exists(path)) {
+    fs::create_directories(path);
+  }
+}
+
 build_ctx::build_ctx(std::string build_script)
     : m_build_script(build_script) {
   auto& install = target<phony>(cli::INSTALL);
@@ -78,12 +84,6 @@ step& build_ctx::add_step(fs::path exe,
 }
 
 step& build_ctx::add_phony() { return m_steps.emplace_front("").phony(true); }
-
-void build_ctx::create_if_not_exists(fs::path path) const {
-  if (!fs::exists(path)) {
-    fs::create_directories(path);
-  }
-}
 
 target& build_ctx::find_target(std::string name) {
   using namespace std::ranges;

@@ -12,8 +12,8 @@ unix_toolchain::unix_toolchain(std::string prefix)
 
 object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
   auto src_file = ctx.directory() / src;
-  auto obj_file = ctx.cache() / src.parent_path() / src.filename();
-  obj_file += ".o";
+  auto obj_file = ctx.cache() / fs::relative(src.parent_path())
+                  / std::format("{}.o", src.filename().string());
 
   // 1. compile object step
   auto& build_step =

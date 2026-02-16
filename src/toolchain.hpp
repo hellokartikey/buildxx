@@ -6,9 +6,10 @@
 
 namespace buildxx {
 class build_ctx;
+class source_files;
 
 enum class link { archive, shared };
-enum class cxx_std { cxx98, cxx11, cxx14, cxx17, cxx20, cxx23, cxx26 };
+enum class std_cxx { compiler, cxx98, cxx11, cxx14, cxx17, cxx20, cxx23, cxx26 };
 
 struct object {
   fs::path object_file;

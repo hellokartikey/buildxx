@@ -2,7 +2,7 @@
 
 // clang-format off
 void buildxx::build(build_ctx& ctx, toolchain& tc) {
-  tc.cxx_standard(cxx_std::cxx23);
+  tc.cxx_standard(std_cxx::cxx23);
 
   ctx.target<command>("echo2")
     .executable("echo")

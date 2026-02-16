@@ -15,7 +15,7 @@ namespace buildxx {
 class build_ctx {
 private:
   static constexpr auto* PREFIX = "bxx-out";
-  static constexpr auto* CACHE_DIR = ".artifacts";
+  static constexpr auto* CACHE_DIR = ".bxx-cache";
 
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
@@ -59,10 +59,10 @@ public:
   }
 
 private:
-  void create_if_not_exists(fs::path path) const;
-
   class target& find_target(std::string name);
   fs::path build_script(toolchain& tc, bool verbose = false);
+
+  // commands
   int build_target(toolchain& tc, std::string name, bool verbose = false);
   int list_targets() const;
 
