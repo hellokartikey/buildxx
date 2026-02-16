@@ -12,7 +12,7 @@ unix_toolchain::unix_toolchain(std::string prefix)
 
 object unix_toolchain::build_cxx(build_ctx& ctx, fs::path src) {
   auto src_file = ctx.directory() / src;
-  auto obj_file = ctx.tmp(src.parent_path()) / src.filename();
+  auto obj_file = ctx.cache() / src.parent_path() / src.filename();
   obj_file += ".o";
 
   // 1. compile object step

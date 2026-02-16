@@ -37,8 +37,6 @@ protected:
   virtual void create_steps(build_ctx& ctx, toolchain& tc) = 0;
 
   step& final_step();
-
-private:
   step& first_step();
 
 private:

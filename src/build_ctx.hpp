@@ -14,9 +14,9 @@ int main(int, char**);
 namespace buildxx {
 class build_ctx {
 private:
-  static constexpr auto* PREFIX = "buildxx-out";
+  static constexpr auto* PREFIX = "bxx-out";
+  static constexpr auto* CACHE_DIR = ".artifacts";
 
-  static constexpr auto* TMP_DIR = "tmp";
   static constexpr auto* BIN_DIR = "bin";
   static constexpr auto* LIB_DIR = "lib";
   static constexpr auto* INC_DIR = "include";
@@ -31,13 +31,14 @@ public:
 
   build_ctx& install(class target& target);
 
-  fs::path prefix() const;
   fs::path directory() const;
   fs::path sub_directory(std::string directory = "") const;
 
+  fs::path prefix() const;
+  fs::path cache() const;
+
   fs::path bin() const;
   fs::path lib() const;
-  fs::path tmp(fs::path path) const;
 
   step& add_step(fs::path exe, step::arguments args, step::environment_map env);
   step& add_phony();
@@ -62,9 +63,7 @@ private:
 
   class target& find_target(std::string name);
   fs::path build_script(toolchain& tc, bool verbose = false);
-  int build_install_steps(toolchain& tc,
-                          std::string name,
-                          bool verbose = false);
+  int build_target(toolchain& tc, std::string name, bool verbose = false);
   int list_targets() const;
 
 private:
@@ -74,7 +73,7 @@ private:
 
   std::vector<std::unique_ptr<class target>> m_targets;
   std::list<step> m_steps;
-  std::vector<step*> m_install;
+  step* m_install;
 };
 } // namespace buildxx
 

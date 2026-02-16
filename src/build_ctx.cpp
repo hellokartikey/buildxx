@@ -17,9 +17,7 @@ build_ctx::build_ctx(std::string build_script)
 
   auto& script = target<library>(m_build_script)
                      .linkage(link::shared)
-                     .source(sub_directory() / build_script);
-
-  install_step(install.final_step());
+                     .source(directory() / build_script);
 }
 
 asio::io_context& build_ctx::io_context() { return m_io; }
@@ -65,8 +63,8 @@ fs::path build_ctx::lib() const {
   return path;
 }
 
-fs::path build_ctx::tmp(fs::path p) const {
-  auto path = prefix() / TMP_DIR / p;
+fs::path build_ctx::cache() const {
+  auto path = CACHE_DIR;
 
   create_if_not_exists(path);
 
@@ -107,9 +105,7 @@ fs::path build_ctx::build_script(toolchain& tc, bool verbose) {
   return script.artifact().value().archive_file;
 }
 
-int build_ctx::build_install_steps(toolchain& tc,
-                                   std::string name,
-                                   bool verbose) {
+int build_ctx::build_target(toolchain& tc, std::string name, bool verbose) {
   auto& build = find_target(name);
   build.create_steps_with_deps(*this, tc);
   return build.final_step().run(*this, verbose);
@@ -128,6 +124,4 @@ int build_ctx::list_targets() const {
 
   return 0;
 }
-
-void build_ctx::install_step(step& step) { m_install.push_back(&step); }
 } // namespace buildxx

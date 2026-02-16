@@ -1,4 +1,9 @@
-buildxx-out/
+bxx-out/
+
+cmake/
 build/
+
 .cache/
+.bxx-cache/
+
 compile_commands.json

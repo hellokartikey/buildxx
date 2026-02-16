@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     }
 
     // 6.2 build default install step
-    return ctx.build_install_steps(tc, cli.target(), cli.is_verbose());
+    return ctx.build_target(tc, cli.target(), cli.is_verbose());
 
   } catch (const std::runtime_error& e) {
     spdlog::critical("buildxx error: {}", e.what());

@@ -16,9 +16,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include(FetchContent)
 
 FetchContent_Declare(
-    dylib
-    GIT_REPOSITORY "https://github.com/martin-olivier/dylib"
-    GIT_TAG        "v3.0.1"
+  dylib
+  GIT_REPOSITORY "https://github.com/martin-olivier/dylib"
+  GIT_TAG        "v3.0.1"
 )
 
 FetchContent_MakeAvailable(dylib)

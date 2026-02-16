@@ -1,7 +1,7 @@
-add_library(buildxx_lib SHARED)
-set_target_properties(buildxx_lib PROPERTIES OUTPUT_NAME buildxx)
+add_library(libbxx SHARED)
+set_target_properties(libbxx PROPERTIES OUTPUT_NAME bxx)
 
-target_sources(buildxx_lib
+target_sources(libbxx
 PRIVATE
   cli.cpp
   build_ctx.cpp
@@ -17,12 +17,14 @@ PRIVATE
   unix_toolchain.cpp
 )
 
-target_link_libraries(buildxx_lib
+target_link_libraries(libbxx
 PUBLIC
   Boost::process
   CLI11::CLI11
   spdlog::spdlog
 )
 
-add_executable(buildxx main.cpp)
-target_link_libraries(buildxx PRIVATE buildxx_lib dylib)
+add_executable(bxx main.cpp)
+target_link_libraries(bxx PRIVATE libbxx dylib)
+
+install(TARGETS bxx libbxx)
