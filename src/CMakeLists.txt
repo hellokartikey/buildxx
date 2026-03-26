@@ -1,30 +1,19 @@
-add_library(libbxx SHARED)
-set_target_properties(libbxx PROPERTIES OUTPUT_NAME bxx)
+add_library(buildxx_static)
 
-target_sources(libbxx
+target_sources(buildxx_static
 PRIVATE
-  cli.cpp
   build_ctx.cpp
-  step.cpp
-
-  target.cpp
-  phony.cpp
-  command.cpp
-  executable.cpp
-  library.cpp
-
-  toolchain.cpp
-  unix_toolchain.cpp
+  shell.cpp
 )
 
-target_link_libraries(libbxx
+target_link_libraries(buildxx_static
 PUBLIC
+  Boost::cobalt
   Boost::process
-  CLI11::CLI11
   spdlog::spdlog
 )
 
-add_executable(bxx main.cpp)
-target_link_libraries(bxx PRIVATE libbxx dylib)
+add_executable(buildxx main.cpp)
+target_link_libraries(buildxx PRIVATE buildxx_static CLI11::CLI11)
 
-install(TARGETS bxx libbxx)
+install(TARGETS buildxx)

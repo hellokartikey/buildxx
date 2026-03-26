@@ -1,79 +1,43 @@
-#ifndef HK_BUILDXX_BUILD_CTX_HPP
-#define HK_BUILDXX_BUILD_CTX_HPP
+#ifndef BUILDXX_BUILD_CTX_HPP
+#define BUILDXX_BUILD_CTX_HPP
 
-#include <list>
-#include <vector>
+#include <concepts>
 
-#include "common.hpp"
-#include "step.hpp"
-#include "target.hpp"
-#include "toolchain.hpp"
-
-int main(int, char**);
+#include "option.hpp"
+#include "types.hpp"
 
 namespace buildxx {
+class target;
+class shell;
+
 class build_ctx {
-private:
-  static constexpr auto* PREFIX = "bxx-out";
-  static constexpr auto* CACHE_DIR = ".bxx-cache";
-
-  static constexpr auto* BIN_DIR = "bin";
-  static constexpr auto* LIB_DIR = "lib";
-  static constexpr auto* INC_DIR = "include";
-
-  build_ctx(std::string build_script);
-  friend int ::main(int, char**);
-
 public:
+  build_ctx() = default;
   ~build_ctx() = default;
 
-  asio::io_context& io_context();
+  path root() const;
+  path dir(string dir) const;
 
-  build_ctx& install(class target& target);
+  path prefix() const;
+  path bin() const;
+  path lib() const;
+  path tmp() const;
 
-  fs::path directory() const;
-  fs::path sub_directory(std::string directory = "") const;
+  template <std::derived_from<target> T> T& add(string name);
 
-  fs::path prefix() const;
-  fs::path cache() const;
+  shell& step();
 
-  fs::path bin() const;
-  fs::path lib() const;
-
-  step& add_step(fs::path exe, step::arguments args, step::environment_map env);
-  step& add_phony();
-  void install_step(step& step);
-
-  template <class T>
-    requires(std::derived_from<T, class target>)
-  T& target(std::string name) {
-    using namespace std::ranges;
-
-    if (contains(m_targets, name, [](auto& ptr) { return ptr->name(); })) {
-      throw std::runtime_error(
-          std::format("target with name {} already exists.", name));
-    }
-
-    return static_cast<T&>(
-        *m_targets.emplace_back(std::make_unique<T>(*this, name)));
-  }
+  template <typename T> option<T> config(string name, string description);
 
 private:
-  class target& find_target(std::string name);
-  fs::path build_script(toolchain& tc, bool verbose = false);
+  path m_root = fs::current_path();
+  path m_prefix = m_root / "buildxx-out";
 
-  // commands
-  int build_target(toolchain& tc, std::string name, bool verbose = false);
-  int list_targets() const;
+  string m_bin = "bin";
+  string m_lib = "lib";
+  string m_tmp = "tmp";
 
-private:
-  asio::io_context m_io;
-
-  std::string m_build_script;
-
-  std::vector<std::unique_ptr<class target>> m_targets;
-  std::list<step> m_steps;
-  step* m_install;
+  list<shell> m_steps;
 };
 } // namespace buildxx
 

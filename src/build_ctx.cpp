@@ -1,127 +1,19 @@
 #include "build_ctx.hpp"
 
-#include <print>
-#include <ranges>
-#include <stdexcept>
-
-#include <spdlog/spdlog.h>
-
-#include "cli.hpp"
-#include "library.hpp"
-#include "phony.hpp"
+#include "shell.hpp"
 
 namespace buildxx {
-void create_if_not_exists(fs::path path) {
-  if (!fs::exists(path)) {
-    fs::create_directories(path);
-  }
-}
+path build_ctx::root() const { return m_root; }
 
-build_ctx::build_ctx(std::string build_script)
-    : m_build_script(build_script) {
-  auto& install = target<phony>(cli::INSTALL);
+path build_ctx::dir(string dir) const { return m_root / dir; }
 
-  auto& script = target<library>(m_build_script)
-                     .linkage(link::shared)
-                     .source(directory() / build_script);
-}
+path build_ctx::prefix() const { return m_prefix; }
 
-asio::io_context& build_ctx::io_context() { return m_io; }
+path build_ctx::bin() const { return m_prefix / m_bin; }
 
-build_ctx& build_ctx::install(class target& target) {
-  m_targets.front()->depends_on(target);
-  return *this;
-}
+path build_ctx::lib() const { return m_prefix / m_lib; }
 
-fs::path build_ctx::sub_directory(std::string f) const {
-  auto path = directory() / f;
+path build_ctx::tmp() const { return m_prefix / m_tmp; }
 
-  if (!fs::exists(path) or !fs::is_directory(path)) {
-    throw std::runtime_error(std::format("directory {} does not exist", f));
-  }
-
-  return fs::path{f};
-}
-
-fs::path build_ctx::prefix() const {
-  auto path = directory() / PREFIX;
-
-  create_if_not_exists(path);
-
-  return path;
-}
-
-fs::path build_ctx::directory() const { return fs::current_path(); }
-
-fs::path build_ctx::bin() const {
-  auto path = prefix() / BIN_DIR;
-
-  create_if_not_exists(path);
-
-  return path;
-}
-
-fs::path build_ctx::lib() const {
-  auto path = prefix() / LIB_DIR;
-
-  create_if_not_exists(path);
-
-  return path;
-}
-
-fs::path build_ctx::cache() const {
-  auto path = CACHE_DIR;
-
-  create_if_not_exists(path);
-
-  return path;
-}
-
-step& build_ctx::add_step(fs::path exe,
-                          step::arguments args,
-                          step::environment_map env) {
-  return m_steps.emplace_front(exe, args, env);
-}
-
-step& build_ctx::add_phony() { return m_steps.emplace_front("").phony(true); }
-
-target& build_ctx::find_target(std::string name) {
-  using namespace std::ranges;
-
-  auto iter = find(m_targets, name, [&](auto& ptr) { return ptr->name(); });
-  if (iter == m_targets.end()) {
-    throw std::runtime_error(std::format("target {} does not exist", name));
-  }
-
-  return *(*iter).get();
-}
-
-fs::path build_ctx::build_script(toolchain& tc, bool verbose) {
-  auto& script = static_cast<library&>(find_target(m_build_script));
-
-  script.create_steps_with_deps(*this, tc);
-  script.final_step().run(*this, verbose);
-
-  return script.artifact().value().archive_file;
-}
-
-int build_ctx::build_target(toolchain& tc, std::string name, bool verbose) {
-  auto& build = find_target(name);
-  build.create_steps_with_deps(*this, tc);
-  return build.final_step().run(*this, verbose);
-}
-
-int build_ctx::list_targets() const {
-  using namespace std::ranges::views;
-
-  for (const auto& [idx, ptr] : enumerate(m_targets)) {
-    if (idx == 0) {
-      std::println("{} [default]", ptr->name());
-    } else {
-      std::println("{}", ptr->name());
-    }
-  }
-
-  return 0;
-}
+shell& build_ctx::step() { return m_steps.emplace_back(); }
 } // namespace buildxx
