@@ -9,7 +9,7 @@ class file_set;
 class library;
 class shell;
 
-class target : public toolchain {
+class target {
 public:
   target(build_ctx& ctx, const string& name);
   virtual ~target() = default;
@@ -30,24 +30,18 @@ public:
 
   auto& files(this auto& self, const file_set& files);
 
-  auto& link(this auto& self, library& library) {
-    self.m_link.push_back(&library);
-    return self;
-  }
-
   auto& depends_on(this auto& self, shell& step) {
     self.first_step().depends_on(step);
     return self;
   }
 
   auto& build(this auto& self) {
-    self.build_steps();
     self.ctx().build_step().depends_on(self.final_step());
     return self;
   }
 
-  virtual shell& first_step() = 0;
-  virtual shell& final_step() = 0;
+  shell& first_step();
+  shell& final_step();
 
   virtual const path& out_file() const = 0;
 
@@ -55,15 +49,16 @@ public:
 
 protected:
   build_ctx& ctx();
+  const build_ctx& ctx() const;
 
 private:
   build_ctx* m_ctx;
 
   string m_name;
-
-  vector<library*> m_link;
-
   vector<path> m_files;
+
+  shell* m_link_step;
+  shell* m_first_step;
 };
 } // namespace buildxx
 

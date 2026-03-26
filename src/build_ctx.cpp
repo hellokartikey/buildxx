@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include "build_ctx.hpp"
 #include "shell.hpp"
 
 namespace buildxx {
@@ -22,5 +23,15 @@ path build_ctx::tmp() const { return m_prefix / m_tmp; }
 
 shell& build_ctx::step() { return m_steps.emplace_back(); }
 
-shell& build_ctx::build_step() { return *m_build; }
+shell& build_ctx::build_step() {
+  if (not m_steps_created) {
+    for (auto& lib : m_targets) {
+      lib->build_steps();
+    }
+
+    m_steps_created = true;
+  }
+
+  return *m_build;
+}
 } // namespace buildxx

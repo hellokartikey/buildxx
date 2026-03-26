@@ -6,6 +6,8 @@
 #include <fmt/format.h>
 
 namespace buildxx {
+class library;
+
 class toolchain {
 public:
   toolchain();
@@ -22,6 +24,13 @@ public:
 
   auto& c_lang(this auto& self, bool value) {
     self.m_c = value;
+    return self;
+  }
+
+  bool shared() const;
+
+  auto& shared(this auto& self, bool value) {
+    self.m_shared = value;
     return self;
   }
 
@@ -127,13 +136,26 @@ public:
     return self;
   }
 
+  vector<library*> link_libraries() const;
+
+  template <typename T, typename U>
+  auto& link(this T& self, U& lib)
+    requires(std::same_as<U, library>)
+  {
+    self.first_step().depends_on(lib.final_step());
+    self.m_link.push_back(&lib);
+    return self;
+  }
+
   vector<string> build_flags() const;
+  vector<path> link_files() const;
 
   auto& merge(this auto& self, const toolchain& other);
 
 private:
   int m_std = 0;
   bool m_c = false;
+  bool m_shared = false;
 
   path m_cxx;
   path m_cc;
@@ -148,6 +170,8 @@ private:
   vector<path> m_includes;
   map<string, string> m_defines;
   vector<string> m_undefines;
+
+  vector<library*> m_link;
 };
 } // namespace buildxx
 

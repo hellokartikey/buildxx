@@ -1,12 +1,15 @@
-#include <iostream>
+#include <stdio.h>
+
+#include <foo.hh>
 
 #ifdef TEST
 #define PI 3.14
 #else
-#define PI 3
+#define PI 3.0
 #endif
 
 int main() {
-  std::cout << "PI = " << PI << "\n";
+  printf("PI = %f\n", PI);
+  printf("foo() = %d\n", foo());
   return 0;
 }

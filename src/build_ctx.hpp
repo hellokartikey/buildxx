@@ -45,6 +45,8 @@ private:
   vector<std::unique_ptr<target>> m_targets;
 
   shell* m_build = nullptr;
+
+  bool m_steps_created = false;
 };
 } // namespace buildxx
 

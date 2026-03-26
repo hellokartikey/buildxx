@@ -5,7 +5,6 @@
 
 namespace buildxx {
 void build(build_ctx& ctx);
-void run_build(build_ctx& ctx);
 } // namespace buildxx
 
 #endif
