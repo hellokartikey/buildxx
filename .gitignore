@@ -2,8 +2,7 @@
 cmake/
 build/
 
-bxx-out/
-.bxx-cache/
+buildxx-out/
 
 prefix/
 

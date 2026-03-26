@@ -3,7 +3,12 @@ add_library(buildxx_static)
 target_sources(buildxx_static
 PRIVATE
   build_ctx.cpp
+  build.cpp
   shell.cpp
+
+  toolchain.cpp
+  target.cpp
+  executable.cpp
 )
 
 target_link_libraries(buildxx_static

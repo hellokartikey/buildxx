@@ -34,8 +34,13 @@ class error : public std::runtime_error {
 public:
   error(const char* err)
       : std::runtime_error(err) {}
+  error(const string& err)
+      : std::runtime_error(err) {}
+
   ~error() = default;
 };
+
+using namespace std::literals;
 } // namespace buildxx
 
 #endif
