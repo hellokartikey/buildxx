@@ -1,20 +1,42 @@
-#include "buildxx.hpp"
+#include <buildxx/buildxx.hpp>
 
-void buildxx::build(build_ctx& ctx) {
-  path header = HEADER;
-  auto& build_exe = ctx.add<executable>("build_cc")
-                        .file(ctx.build_script())
-                        .std(23)
-                        .link(BUILDXX_STATIC)
-                        .link(BOOST_COBALT)
-                        .link(BOOST_FILESYSTEM)
-                        .link(BOOST_PROCESS)
-                        .link(SPDLOG)
-                        .link(FMT)
-                        .include(header.parent_path())
-                        .build();
+#include <spdlog/spdlog.h>
 
-  vector<string> argv(ctx.argv(), ctx.argv() + ctx.argc());
+#include <CLI/CLI.hpp>
 
-  ctx.build_step().depends_on(build_exe.run_step().flags(argv));
+using namespace buildxx;
+
+co::main co_main(int argc, char** argv) {
+  spdlog::set_pattern("[%^%l%$] %v");
+
+  CLI::App app{"Modern C++ built tool."};
+
+  std::string build_cc;
+  app.add_option("script", build_cc, "The build script")
+      ->default_val("build.cpp");
+
+  bool verbose;
+  app.add_flag("-v,--verbose", verbose, "Verbose output")->default_val(false);
+
+  argv = app.ensure_utf8(argv);
+
+  try {
+    app.parse(argc, argv);
+  } catch (const CLI::ParseError& e) {
+    co_return app.exit(e);
+  }
+
+  build_ctx ctx(argc, argv, build_cc);
+
+  build(ctx);
+
+  try {
+    co_await ctx.build_step().exec(verbose);
+  } catch (error& e) {
+    spdlog::error(e.what());
+  } catch (std::exception& e) {
+    spdlog::error(fmt::format("unknown: {}", e.what()));
+  }
+
+  co_return 0;
 }

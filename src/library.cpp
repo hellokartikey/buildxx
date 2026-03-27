@@ -1,8 +1,6 @@
-#include "library.hpp"
+#include <buildxx/buildxx.hpp>
 
 #include <ranges>
-
-#include "build_ctx.hpp"
 
 namespace buildxx {
 library::library(build_ctx& ctx, const string& name)

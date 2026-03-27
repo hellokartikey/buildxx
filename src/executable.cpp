@@ -1,10 +1,8 @@
-#include "executable.hpp"
+#include <buildxx/buildxx.hpp>
 
 #include <ranges>
 
 #include <spdlog/spdlog.h>
-
-#include "build_ctx.hpp"
 
 namespace buildxx {
 executable::executable(build_ctx& ctx, const string& name)

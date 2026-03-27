@@ -1,6 +1,4 @@
-#include "target.hpp"
-
-#include "build_ctx.hpp"
+#include <buildxx/buildxx.hpp>
 
 namespace buildxx {
 target::target(build_ctx& ctx, const string& name)

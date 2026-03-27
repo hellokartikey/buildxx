@@ -1,8 +1,8 @@
 #ifndef BUILDXX_BUILDXX_HPP
 #define BUILDXX_BUILDXX_HPP
 
-#include "build.hpp"
 #include "build_ctx.hpp"
+#include "entry.hpp"
 #include "executable.hpp"
 #include "library.hpp"
 #include "option.hpp"

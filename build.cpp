@@ -1,4 +1,4 @@
-#include <buildxx.hpp>
+#include "src/buildxx/buildxx.hpp"
 
 // clang-format off
 void buildxx::build(build_ctx& ctx) {
