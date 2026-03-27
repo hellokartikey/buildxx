@@ -84,9 +84,13 @@ vector<string> toolchain::build_flags() const {
 vector<path> toolchain::link_files() const {
   namespace views = std::views;
   namespace ranges = std::ranges;
+
   auto to_lib = [this](auto* l) { return l->out_file(); };
   vector<path> libraries =
       link_libraries() | views::transform(to_lib) | ranges::to<vector>();
+
+  libraries.append_range(m_path_link);
+
   return libraries;
 }
 } // namespace buildxx

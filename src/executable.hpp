@@ -13,6 +13,8 @@ public:
 
   executable& build_steps() override;
 
+  shell& run_step();
+
 private:
   path m_out_file;
 };

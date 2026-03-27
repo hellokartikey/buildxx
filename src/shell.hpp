@@ -1,6 +1,8 @@
 #ifndef BUILDXX_SHELL_HPP
 #define BUILDXX_SHELL_HPP
 
+#include <mutex>
+
 #include "types.hpp"
 
 namespace buildxx {
@@ -22,10 +24,10 @@ public:
 
   shell& depends_on(shell& other);
 
-  task<int> exec();
+  task<std::unique_lock<std::mutex>> lock();
+  task<int> exec(bool verbose = false);
   int rc() const;
 
-  bool is_done() const;
   bool is_ok() const;
   bool is_phony() const;
   bool is_nop() const;
@@ -39,6 +41,8 @@ public:
 
 private:
   int m_rc = RC_NULL;
+
+  std::mutex m_mutex;
 
   path m_exe;
   vector<string> m_args;

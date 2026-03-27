@@ -1,30 +1,16 @@
-#include "src/buildxx.hpp"
+#include <buildxx.hpp>
 
 // clang-format off
-void buildxx::build(build_ctx& ctx, toolchain& tc) {
-  tc.cxx_standard(std_cxx::cxx23);
+void buildxx::build(build_ctx& ctx) {
+  auto test_dir = ctx.dir("test");
 
-  ctx.target<command>("echo2")
-    .executable("echo")
-    .option("Copy!")
-    ;
+  auto& foo = ctx.add<library>("foo")
+    .file(test_dir / "foo.cc");
 
-  auto test = ctx.sub_directory("test");
-
-  ctx.install(
-    ctx.target<executable>("test_app")
-      .sources(test, { "main.cpp" })
-      .depends_on(
-        ctx.target<command>("printenv")
-          .executable("printenv")
-          .environment("BUILDXX", "build++")
-          .option("BUILDXX")
-      )
-      .link(
-        ctx.target<library>("foo")
-          .linkage(link::shared)
-          .source(test / "foo.cpp")
-      )
-  );
+  auto& exe = ctx.add<executable>("test")
+    .file(test_dir / "main.cc")
+    .link(foo)
+    .include(test_dir)
+    .build();
 }
 // clang-format on

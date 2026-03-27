@@ -22,16 +22,14 @@ library& library::shared(bool value) {
   return *this;
 }
 
-const path& library::out_file() const {
-  return m_out_file;
-}
+const path& library::out_file() const { return m_out_file; }
 
 library& library::build_steps() {
   namespace views = std::views;
   namespace ranges = std::ranges;
 
   auto to_object = [this](auto p) {
-    return this->ctx().tmp() / p.concat(".o");
+    return this->ctx().tmp() / p.relative_path().concat(".o");
   };
 
   auto tc_flags = build_flags();
@@ -40,17 +38,17 @@ library& library::build_steps() {
       files() | views::transform(to_object) | ranges::to<vector<path>>();
 
   for (auto [in, out] : views::zip(files(), objects)) {
-    auto& object_step = ctx()
-                            .step()
-                            .bin(c_lang() ? cc() : cxx())
-                            .flags(tc_flags)
-                            .flag("-c")
-                            .flag("-o")
-                            .out_file(out)
-                            .in_file(in)
-                            .message(fmt::format("Building binary object {}",
-                                                 out.string()))
-                            .depends_on(first_step());
+    auto& object_step =
+        ctx()
+            .step()
+            .bin(c_lang() ? cc() : cxx())
+            .flags(tc_flags)
+            .flag("-c")
+            .flag("-o")
+            .out_file(out)
+            .in_file(in)
+            .message(fmt::format("Building binary object {}", out.string()))
+            .depends_on(first_step());
 
     final_step().depends_on(object_step);
   }

@@ -1,24 +1,20 @@
-#include <spdlog/spdlog.h>
+#include "buildxx.hpp"
 
-#include "build.hpp"
-#include "build_ctx.hpp"
+void buildxx::build(build_ctx& ctx) {
+  path header = HEADER;
+  auto& build_exe = ctx.add<executable>("build_cc")
+                        .file(ctx.build_script())
+                        .std(23)
+                        .link(BUILDXX_STATIC)
+                        .link(BOOST_COBALT)
+                        .link(BOOST_FILESYSTEM)
+                        .link(BOOST_PROCESS)
+                        .link(SPDLOG)
+                        .link(FMT)
+                        .include(header.parent_path())
+                        .build();
 
-using namespace buildxx;
+  vector<string> argv(ctx.argv(), ctx.argv() + ctx.argc());
 
-co::main co_main(int argc, char** argv) {
-  spdlog::set_pattern("[%^%l%$] %v");
-
-  build_ctx ctx;
-
-  build(ctx);
-
-  try {
-    co_await ctx.build_step().exec();
-  } catch (error& e) {
-    spdlog::error(e.what());
-  } catch (std::exception& e) {
-    spdlog::error(fmt::format("unknown: {}", e.what()));
-  }
-
-  co_return 0;
+  ctx.build_step().depends_on(build_exe.run_step().flags(argv));
 }

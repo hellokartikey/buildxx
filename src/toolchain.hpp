@@ -147,6 +147,11 @@ public:
     return self;
   }
 
+  auto& link(this auto& self, path lib) {
+    self.m_path_link.push_back(lib);
+    return self;
+  }
+
   vector<string> build_flags() const;
   vector<path> link_files() const;
 
@@ -172,6 +177,7 @@ private:
   vector<string> m_undefines;
 
   vector<library*> m_link;
+  vector<path> m_path_link;
 };
 } // namespace buildxx
 

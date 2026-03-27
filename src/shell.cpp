@@ -1,5 +1,7 @@
 #include "shell.hpp"
 
+#include <chrono>
+
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 
@@ -39,15 +41,28 @@ shell& shell::depends_on(shell& other) {
   return *this;
 }
 
-task<int> shell::exec() {
-  if (is_done()) {
+task<std::unique_lock<std::mutex>> shell::lock() {
+  using namespace std::literals;
+
+  while (not m_mutex.try_lock()) {
+    co_await asio::steady_timer(co_await co::this_coro::executor, 1s)
+        .async_wait();
+  }
+
+  co_return std::unique_lock(m_mutex, std::adopt_lock);
+}
+
+task<int> shell::exec(bool verbose) {
+  auto _ = co_await lock();
+
+  if (m_rc != RC_NULL) {
     co_return rc();
   }
 
   vector<task<int>> depends;
 
   for (auto* dep : m_depends) {
-    depends.push_back(dep->exec());
+    depends.push_back(dep->exec(verbose));
   }
 
   co_await co::join(depends);
@@ -65,7 +80,9 @@ task<int> shell::exec() {
     spdlog::info(m_msg);
   }
 
-  fmt::print("{} {}\n", m_exe.string(), fmt::join(m_args, " "));
+  if (verbose) {
+    fmt::print("{} {}\n", m_exe.string(), fmt::join(m_args, " "));
+  }
 
   if (auto p = out_file().parent_path(); not p.empty() and not fs::exists(p)) {
     if (not fs::create_directories(p)) {
@@ -87,8 +104,6 @@ task<int> shell::exec() {
 }
 
 int shell::rc() const { return m_rc; }
-
-bool shell::is_done() const { return rc() != RC_NULL; }
 
 bool shell::is_ok() const { return rc() == RC_OK; }
 

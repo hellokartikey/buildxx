@@ -11,7 +11,7 @@
 namespace buildxx {
 class build_ctx {
 public:
-  build_ctx();
+  build_ctx(int argc, char** argv, string script);
   ~build_ctx() = default;
 
   path root() const;
@@ -31,6 +31,10 @@ public:
   shell& step();
   shell& build_step();
 
+  int argc() const;
+  char** argv() const;
+  const string& build_script() const;
+
   template <typename T> option<T> config(string name, string description);
 
 private:
@@ -47,6 +51,10 @@ private:
   shell* m_build = nullptr;
 
   bool m_steps_created = false;
+
+  int m_argc = 0;
+  char** m_argv = nullptr;
+  string m_script;
 };
 } // namespace buildxx
 

@@ -19,7 +19,7 @@ executable& executable::build_steps() {
   namespace ranges = std::ranges;
 
   auto to_object = [this](auto p) {
-    return this->ctx().tmp() / p.concat(".o");
+    return this->ctx().tmp() / p.relative_path().concat(".o");
   };
 
   vector<path> objects =
@@ -53,5 +53,13 @@ executable& executable::build_steps() {
       .message(fmt::format("Linking executable {}", out_file().string()));
 
   return *this;
+}
+
+shell& executable::run_step() {
+  return ctx()
+      .step()
+      .bin(out_file())
+      .depends_on(final_step())
+      .message(fmt::format("Running executable {}", name()));
 }
 } // namespace buildxx
