@@ -2,8 +2,7 @@
 #define BUILDXX_TOOLCHAIN_HPP
 
 #include "types.hpp"
-
-#include <fmt/format.h>
+#include "utils.hpp"
 
 namespace buildxx {
 class library;
@@ -37,28 +36,28 @@ public:
   const path& cxx() const;
 
   auto& cxx(this auto& self, const path& bin) {
-    self.m_cxx = env::find_executable(bin);
+    self.m_cxx = find_executable(bin);
     return self;
   }
 
   const path& cc() const;
 
   auto& cc(this auto& self, const path& bin) {
-    self.m_cc = env::find_executable(bin);
+    self.m_cc = find_executable(bin);
     return self;
   }
 
   const path& ld() const;
 
   auto& ld(this auto& self, const path& bin) {
-    self.m_ld = env::find_executable(bin);
+    self.m_ld = find_executable(bin);
     return self;
   }
 
   const path& ar() const;
 
   auto& ar(this auto& self, const path& bin) {
-    self.m_ar = env::find_executable(bin);
+    self.m_ar = find_executable(bin);
     return self;
   }
 

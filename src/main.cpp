@@ -1,10 +1,11 @@
 #include <buildxx/buildxx.hpp>
 
+#include <boost/cobalt/main.hpp>
 #include <spdlog/spdlog.h>
-
 #include <CLI/CLI.hpp>
 
 using namespace buildxx;
+namespace co = boost::cobalt;
 
 co::main co_main(int argc, char** argv) {
   spdlog::set_pattern("[%^%l%$] %v");
@@ -26,11 +27,9 @@ co::main co_main(int argc, char** argv) {
     co_return app.exit(e);
   }
 
-  build_ctx ctx(argc, argv, build_cc);
-
-  build(ctx);
-
   try {
+    build_ctx ctx(argc, argv, build_cc);
+    build(ctx);
     co_await ctx.build_step().exec(verbose);
   } catch (error& e) {
     spdlog::error(e.what());

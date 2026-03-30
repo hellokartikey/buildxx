@@ -2,13 +2,22 @@
 
 #include <chrono>
 
+#include <boost/asio/steady_timer.hpp>
+#include <boost/cobalt/this_coro.hpp>
+#include <boost/cobalt/join.hpp>
+#include <boost/process.hpp>
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 
 namespace buildxx {
+namespace asio = boost::asio;
+namespace co = boost::cobalt;
+namespace proc = boost::process;
+namespace env = proc::environment;
+
 shell& shell::bin(const char* exe) { return bin(string(exe)); }
 
-shell& shell::bin(const string& exe) { return bin(env::find_executable(exe)); }
+shell& shell::bin(const string& exe) { return bin(find_executable(exe)); }
 
 shell& shell::bin(const path& exe) {
   m_exe = exe;
@@ -41,19 +50,11 @@ shell& shell::depends_on(shell& other) {
   return *this;
 }
 
-task<std::unique_lock<std::mutex>> shell::lock() {
-  using namespace std::literals;
-
-  while (not m_mutex.try_lock()) {
-    co_await asio::steady_timer(co_await co::this_coro::executor, 1s)
-        .async_wait();
-  }
-
-  co_return std::unique_lock(m_mutex, std::adopt_lock);
-}
-
 task<int> shell::exec(bool verbose) {
-  auto _ = co_await lock();
+  while (not m_mutex.try_lock()) {
+    co_await asio::steady_timer(co_await co::this_coro::executor, 1s).async_wait();
+  }
+  auto _ = std::lock_guard(m_mutex, std::adopt_lock);
 
   if (m_rc != RC_NULL) {
     co_return rc();
@@ -71,9 +72,13 @@ task<int> shell::exec(bool verbose) {
     co_return 0;
   }
 
-  auto env_map = m_env;
+  map<env::key, env::value> env_map;
   for (const auto& kv : env::current()) {
     env_map[kv.key()] = kv.value();
+  }
+
+  for (const auto& [k, v] : m_env) {
+    env_map[k] = v;
   }
 
   if (not m_msg.empty()) {

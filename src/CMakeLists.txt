@@ -1,40 +1,59 @@
-add_library(buildxx_static)
-set_target_properties(buildxx_static PROPERTIES OUTPUT_NAME buildxx)
+add_library(libbuildxx STATIC)
+set_target_properties(libbuildxx PROPERTIES OUTPUT_NAME buildxx)
+target_compile_definitions(libbuildxx PUBLIC BOOST_PROCESS_USE_STD_FS)
 
-file(GLOB_RECURSE BUILDXX_HEADERS "buildxx/*.hpp")
-
-target_sources(buildxx_static
+target_sources(libbuildxx
 PRIVATE
   build_ctx.cpp
-  shell.cpp
-  toolchain.cpp
-  target.cpp
   executable.cpp
   library.cpp
   main.cpp
+  shell.cpp
+  toolchain.cpp
+  target.cpp
+  utils.cpp
 
-PUBLIC
-  FILE_SET HEADERS FILES ${BUILDXX_HEADERS}
+PUBLIC FILE_SET HEADERS FILES
+  buildxx/build_ctx.hpp
+  buildxx/buildxx.hpp
+  buildxx/entry.hpp
+  buildxx/executable.hpp
+  buildxx/library.hpp
+  buildxx/option.hpp
+  buildxx/shell.hpp
+  buildxx/target.hpp
+  buildxx/task.hpp
+  buildxx/toolchain.hpp
+  buildxx/types.hpp
+  buildxx/utils.hpp
 )
 
-target_link_libraries(buildxx_static
-PUBLIC
+target_link_libraries(libbuildxx
+PRIVATE
   Boost::cobalt
-  Boost::filesystem
   Boost::process
   CLI11::CLI11
+  fmt::fmt
   spdlog::spdlog
+  "-static"
 )
 
+add_custom_command(
+OUTPUT headers.tar
+COMMENT "Archiving headers"
+COMMAND ${TAR} -cf headers.tar
+  --transform='s|.*buildxx/||'
+  ${CMAKE_CURRENT_SOURCE_DIR}/buildxx/
+)
+
+bundle_static_library(libbuildxx buildxx_bundle)
 add_executable(buildxx buildxx.cpp)
-target_compile_definitions(buildxx PRIVATE
-  BUILDXX_STATIC="$<TARGET_FILE:buildxx_static>"
-  BOOST_COBALT="$<TARGET_FILE:Boost::cobalt>"
-  BOOST_FILESYSTEM="$<TARGET_FILE:Boost::filesystem>"
-  BOOST_PROCESS="$<TARGET_FILE:Boost::process>"
-  SPDLOG="$<TARGET_FILE:spdlog::spdlog>"
-  FMT="$<TARGET_FILE:fmt::fmt>"
+target_compile_definitions(buildxx
+PRIVATE
+  BUNDLE="$<TARGET_FILE:buildxx_bundle>"
+  HEADERS="${CMAKE_CURRENT_BINARY_DIR}/headers.tar"
 )
-target_link_libraries(buildxx PRIVATE buildxx_static)
+target_sources(buildxx PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/headers.tar")
+target_link_libraries(buildxx PRIVATE libbuildxx archive_static "-static")
 
-install(TARGETS buildxx buildxx_static FILE_SET HEADERS)
+install(TARGETS buildxx libbuildxx FILE_SET HEADERS)

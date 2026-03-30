@@ -11,6 +11,7 @@ public:
 
   library& shared(bool value);
 
+  library& out_file(const path& file) override;
   const path& out_file() const override;
 
   library& build_steps() override;

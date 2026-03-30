@@ -9,6 +9,7 @@ public:
   executable(build_ctx& ctx, const string& name);
   ~executable() override = default;
 
+  executable& out_file(const path& file) override;
   const path& out_file() const override;
 
   executable& build_steps() override;

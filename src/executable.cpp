@@ -10,6 +10,11 @@ executable::executable(build_ctx& ctx, const string& name)
     , toolchain()
     , m_out_file(ctx.bin() / name) {}
 
+executable& executable::out_file(const path& file) {
+  m_out_file = file;
+  return *this;
+}
+
 const path& executable::out_file() const { return m_out_file; }
 
 executable& executable::build_steps() {

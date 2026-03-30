@@ -6,10 +6,10 @@
 
 namespace buildxx {
 toolchain::toolchain()
-    : m_cxx(env::find_executable("c++"))
-    , m_cc(env::find_executable("cc"))
-    , m_ld(env::find_executable("ld"))
-    , m_ar(env::find_executable("ar")) {}
+    : m_cxx(find_executable("c++"))
+    , m_cc(find_executable("cc"))
+    , m_ld(find_executable("ld"))
+    , m_ar(find_executable("ar")) {}
 
 int toolchain::std() const { return m_std; }
 

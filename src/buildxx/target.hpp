@@ -44,6 +44,7 @@ public:
   shell& final_step();
 
   virtual const path& out_file() const = 0;
+  virtual target& out_file(const path& file) = 0;
 
   virtual target& build_steps() = 0;
 

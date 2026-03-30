@@ -2,6 +2,8 @@
 
 #include <ranges>
 
+#include <fmt/format.h>
+
 namespace buildxx {
 library::library(build_ctx& ctx, const string& name)
     : target(ctx, name)
@@ -17,6 +19,11 @@ library& library::shared(bool value) {
     m_out_file = ctx().lib() / fmt::format("lib{}.a", name());
   }
 
+  return *this;
+}
+
+library& library::out_file(const path& file) {
+  m_out_file = file;
   return *this;
 }
 

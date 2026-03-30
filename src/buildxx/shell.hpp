@@ -3,9 +3,13 @@
 
 #include <mutex>
 
+#include <boost/cobalt/task.hpp>
+
 #include "types.hpp"
 
 namespace buildxx {
+using boost::cobalt::task;
+
 class shell {
 public:
   static constexpr int RC_OK = 0;
@@ -24,7 +28,6 @@ public:
 
   shell& depends_on(shell& other);
 
-  task<std::unique_lock<std::mutex>> lock();
   task<int> exec(bool verbose = false);
   int rc() const;
 
@@ -46,7 +49,7 @@ private:
 
   path m_exe;
   vector<string> m_args;
-  map<env::key, env::value> m_env;
+  map<string, string> m_env;
 
   string m_msg;
 
