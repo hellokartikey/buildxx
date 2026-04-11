@@ -12,7 +12,7 @@ Buildxx doesn't opine on any project structure. Here is a simple example.
 │   ├── foo.cpp
 │   ├── foo.hpp
 │   └── main.cpp
-├── build.cpp
+└── build.cpp
 ```
 
 The build script is a C++ file, which describes the build graph.
