@@ -35,9 +35,22 @@ void buildxx::build(build_ctx& ctx) {
 }
 ```
 
+Build the project using simple command,
+
+```
+buildxx
+```
+
+Alternatively, provide a custom build script,
+
+```
+buildxx build.cc
+```
+
 ## Build
 
-Currently buildxx is built using CMake.
+Currently buildxx is configured to build a fully static binary with all the
+dependencies.
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
