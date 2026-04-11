@@ -1,11 +1,14 @@
 #include <buildxx/buildxx.hpp>
 
 #include <chrono>
+#include <thread>
 
 #include <boost/asio/steady_timer.hpp>
+#include <boost/asio/use_future.hpp>
 #include <boost/cobalt/this_coro.hpp>
 #include <boost/cobalt/join.hpp>
 #include <boost/process.hpp>
+#include <fmt/format.h>
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 
@@ -50,28 +53,26 @@ shell& shell::depends_on(shell& other) {
   return *this;
 }
 
-task<int> shell::exec(bool verbose) {
-  while (not m_mutex.try_lock()) {
-    co_await asio::steady_timer(co_await co::this_coro::executor, 1s).async_wait();
-  }
-  auto _ = std::lock_guard(m_mutex, std::adopt_lock);
+int shell::exec(bool verbose) {
+  // 1. acquire mutex
+  auto _ = std::lock_guard(m_mutex);
 
+  // 2. check if already exec
   if (m_rc != RC_NULL) {
-    co_return rc();
+    return m_rc;
   }
 
-  vector<task<int>> depends;
-
+  // 3. await dependencies
   for (auto* dep : m_depends) {
-    depends.push_back(dep->exec(verbose));
+    dep->exec();
   }
 
-  co_await co::join(depends);
-
+  // 4. return if nothing to do
   if (is_nop()) {
-    co_return 0;
+    return m_rc;
   }
 
+  // 5. prepare environment
   map<env::key, env::value> env_map;
   for (const auto& kv : env::current()) {
     env_map[kv.key()] = kv.value();
@@ -81,31 +82,36 @@ task<int> shell::exec(bool verbose) {
     env_map[k] = v;
   }
 
+  // 6. print message
   if (not m_msg.empty()) {
     spdlog::info(m_msg);
   }
 
+  // 7. print command to execute
   if (verbose) {
     fmt::print("{} {}\n", m_exe.string(), fmt::join(m_args, " "));
   }
 
+  // 8. create out_file() directory just in case
   if (auto p = out_file().parent_path(); not p.empty() and not fs::exists(p)) {
     if (not fs::create_directories(p)) {
       throw error(fmt::format("unable to create directory: {}", p.string()));
     }
   }
 
-  proc::process handle(co_await co::this_coro::executor, m_exe, m_args,
-                       proc::process_environment(env_map));
+  // 9. create and await process
+  proc::process handle(co::this_thread::get_executor(), m_exe, m_args,
+      proc::process_environment(env_map));
 
-  m_rc = co_await handle.async_wait();
+  // 10. wait for return code
+  m_rc = handle.wait();
 
   if (not is_ok()) {
     throw error(
         fmt::format("{} returned with exit code {}", m_exe.string(), m_rc));
   }
 
-  co_return m_rc;
+  return m_rc;
 }
 
 int shell::rc() const { return m_rc; }

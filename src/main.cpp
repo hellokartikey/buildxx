@@ -30,11 +30,13 @@ co::main co_main(int argc, char** argv) {
   try {
     build_ctx ctx(argc, argv, build_cc);
     build(ctx);
-    co_await ctx.build_step().exec(verbose);
+    ctx.build_step().exec(verbose);
   } catch (error& e) {
     spdlog::error(e.what());
+    co_return 1;
   } catch (std::exception& e) {
     spdlog::error(fmt::format("unknown: {}", e.what()));
+    co_return 2;
   }
 
   co_return 0;
