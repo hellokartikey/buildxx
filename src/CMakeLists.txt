@@ -22,7 +22,6 @@ PUBLIC FILE_SET HEADERS FILES
   buildxx/option.hpp
   buildxx/shell.hpp
   buildxx/target.hpp
-  buildxx/task.hpp
   buildxx/toolchain.hpp
   buildxx/types.hpp
   buildxx/utils.hpp

@@ -24,5 +24,6 @@ set(ENABLE_TEST OFF)
 FetchContent_Declare(
   archive
   URL https://github.com/libarchive/libarchive/releases/download/v3.8.6/libarchive-3.8.6.tar.gz
+  PATCH_COMMAND patch CMakeLists.txt ${CMAKE_SOURCE_DIR}/cmake/archive.patch
 )
 FetchContent_MakeAvailable(archive)
