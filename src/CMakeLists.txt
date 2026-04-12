@@ -1,7 +1,3 @@
-add_library(libbuildxx STATIC)
-set_target_properties(libbuildxx PROPERTIES OUTPUT_NAME buildxx)
-target_compile_definitions(libbuildxx PUBLIC BOOST_PROCESS_USE_STD_FS)
-
 target_sources(libbuildxx
 PRIVATE
   build_ctx.cpp
@@ -13,20 +9,6 @@ PRIVATE
   toolchain.cpp
   target.cpp
   utils.cpp
-
-PUBLIC FILE_SET HEADERS FILES
-  buildxx/build_ctx.hpp
-  buildxx/buildxx.hpp
-  buildxx/entry.hpp
-  buildxx/executable.hpp
-  buildxx/files.hpp
-  buildxx/library.hpp
-  buildxx/option.hpp
-  buildxx/shell.hpp
-  buildxx/target.hpp
-  buildxx/toolchain.hpp
-  buildxx/types.hpp
-  buildxx/utils.hpp
 )
 
 target_link_libraries(libbuildxx
@@ -36,7 +18,6 @@ PRIVATE
   CLI11::CLI11
   fmt::fmt
   spdlog::spdlog
-  "-static"
 )
 
 add_custom_command(
@@ -48,14 +29,17 @@ COMMAND ${TAR} -cf headers.tar
   ${CMAKE_CURRENT_SOURCE_DIR}/buildxx/
 )
 
-bundle_static_library(libbuildxx buildxx_bundle)
-add_executable(buildxx buildxx.cpp)
 target_compile_definitions(buildxx
 PRIVATE
   BUNDLE="$<TARGET_FILE:buildxx_bundle>"
   HEADERS="${CMAKE_CURRENT_BINARY_DIR}/headers.tar"
 )
 target_sources(buildxx PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/headers.tar")
-target_link_libraries(buildxx PRIVATE libbuildxx archive_static "-static")
+target_link_libraries(buildxx PRIVATE libbuildxx)
 
-install(TARGETS buildxx libbuildxx FILE_SET HEADERS)
+if(BUILDXX_STATIC)
+  target_link_libraries(buildxx PRIVATE archive_static "-static")
+  target_compile_definitions(buildxx PRIVATE BUILDXX_STATIC)
+else(BUILDXX_STATIC)
+  target_link_libraries(buildxx PRIVATE LibArchive::LibArchive)
+endif(BUILDXX_STATIC)

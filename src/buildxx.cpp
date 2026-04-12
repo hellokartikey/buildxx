@@ -72,6 +72,12 @@ void buildxx::build(build_ctx& ctx) {
                         .std(23)
                         .link(library_path)
                         .include(include_path.parent_path())
+#ifndef BUILDXX_STATIC
+                        .ld_flag("-lboost_cobalt")
+                        .ld_flag("-lboost_process")
+                        .ld_flag("-lfmt")
+                        .ld_flag("-lspdlog")
+#endif
                         .out_file(ctx.tmp() / "buildxx")
                         .build();
 
