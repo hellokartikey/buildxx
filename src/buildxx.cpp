@@ -6,6 +6,8 @@
 #include <archive_entry.h>
 #include <spdlog/spdlog.h>
 
+#ifdef BUILDXX_STATIC
+
 const char buildxx_a[] = {
 #embed BUNDLE
 };
@@ -60,23 +62,25 @@ void extract_headers(const buildxx::path& out) {
   archive_free(ar);
 }
 
+#endif
+
 void buildxx::build(build_ctx& ctx) {
+#ifdef BUILDXX_STATIC
   path library_path = ctx.tmp() / path(BUNDLE).filename();
   path include_path = ctx.tmp() / "include" / "buildxx";
 
   extract_library(library_path);
   extract_headers(include_path);
+#endif
 
   auto& build_exe = ctx.add<executable>("buildxx")
                         .file(ctx.build_script())
                         .std(23)
+#ifdef BUILDXX_STATIC
                         .link(library_path)
                         .include(include_path.parent_path())
-#ifndef BUILDXX_STATIC
-                        .ld_flag("-lboost_cobalt")
-                        .ld_flag("-lboost_process")
-                        .ld_flag("-lfmt")
-                        .ld_flag("-lspdlog")
+#else
+                        .ld_flag("-lbuildxx")
 #endif
                         .out_file(ctx.tmp() / "buildxx")
                         .build();

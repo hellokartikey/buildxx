@@ -20,26 +20,24 @@ PRIVATE
   spdlog::spdlog
 )
 
-add_custom_command(
-OUTPUT headers.tar
-DEPENDS libbuildxx
-COMMENT "Archiving headers"
-COMMAND ${TAR} -cf headers.tar
-  --transform='s|.*buildxx/||'
-  ${CMAKE_CURRENT_SOURCE_DIR}/buildxx/
-)
-
-target_compile_definitions(buildxx
-PRIVATE
-  BUNDLE="$<TARGET_FILE:buildxx_bundle>"
-  HEADERS="${CMAKE_CURRENT_BINARY_DIR}/headers.tar"
-)
-target_sources(buildxx PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/headers.tar")
 target_link_libraries(buildxx PRIVATE libbuildxx)
 
 if(BUILDXX_STATIC)
   target_link_libraries(buildxx PRIVATE archive_static "-static")
-  target_compile_definitions(buildxx PRIVATE BUILDXX_STATIC)
-else(BUILDXX_STATIC)
-  target_link_libraries(buildxx PRIVATE LibArchive::LibArchive)
+
+  target_sources(libbuildxx
+  PRIVATE
+    $<TARGET_OBJECTS:Boost::cobalt>
+    $<TARGET_OBJECTS:Boost::process>
+    $<TARGET_OBJECTS:fmt::fmt>
+    $<TARGET_OBJECTS:spdlog::spdlog>
+  )
+
+  target_compile_definitions(buildxx
+  PRIVATE
+    BUILDXX_STATIC
+    BUNDLE="$<TARGET_FILE:libbuildxx>"
+    HEADERS="${CMAKE_CURRENT_BINARY_DIR}/headers.tar"
+  )
 endif(BUILDXX_STATIC)
+
