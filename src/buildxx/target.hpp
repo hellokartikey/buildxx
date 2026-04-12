@@ -5,7 +5,6 @@
 
 namespace buildxx {
 class build_ctx;
-class file_set;
 class library;
 class shell;
 
@@ -27,8 +26,6 @@ public:
   }
 
   const vector<path>& files() const;
-
-  auto& files(this auto& self, const file_set& files);
 
   auto& depends_on(this auto& self, shell& step) {
     self.first_step().depends_on(step);

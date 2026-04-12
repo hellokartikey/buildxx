@@ -5,8 +5,8 @@
 
 #include <boost/asio/steady_timer.hpp>
 #include <boost/asio/use_future.hpp>
-#include <boost/cobalt/this_coro.hpp>
 #include <boost/cobalt/join.hpp>
+#include <boost/cobalt/this_coro.hpp>
 #include <boost/process.hpp>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
@@ -64,7 +64,7 @@ int shell::exec(bool verbose) {
 
   // 3. await dependencies
   for (auto* dep : m_depends) {
-    dep->exec();
+    dep->exec(verbose);
   }
 
   // 4. return if nothing to do
@@ -101,7 +101,7 @@ int shell::exec(bool verbose) {
 
   // 9. create and await process
   proc::process handle(co::this_thread::get_executor(), m_exe, m_args,
-      proc::process_environment(env_map));
+                       proc::process_environment(env_map));
 
   // 10. wait for return code
   m_rc = handle.wait();

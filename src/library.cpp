@@ -40,7 +40,7 @@ library& library::build_steps() {
   auto tc_flags = build_flags();
 
   vector<path> objects =
-      files() | views::transform(to_object) | ranges::to<vector<path>>();
+      files() | views::transform(to_object) | ranges::to<vector>();
 
   for (auto [in, out] : views::zip(files(), objects)) {
     auto& object_step =

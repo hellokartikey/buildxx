@@ -1,8 +1,8 @@
 #include <buildxx/buildxx.hpp>
 
+#include <CLI/CLI.hpp>
 #include <boost/cobalt/main.hpp>
 #include <spdlog/spdlog.h>
-#include <CLI/CLI.hpp>
 
 using namespace buildxx;
 namespace co = boost::cobalt;

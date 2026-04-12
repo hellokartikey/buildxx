@@ -26,7 +26,7 @@ executable& executable::build_steps() {
   };
 
   vector<path> objects =
-      files() | views::transform(to_object) | ranges::to<vector<path>>();
+      files() | views::transform(to_object) | ranges::to<vector>();
 
   auto tc_flags = build_flags();
 

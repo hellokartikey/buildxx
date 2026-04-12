@@ -6,6 +6,7 @@ target_sources(libbuildxx
 PRIVATE
   build_ctx.cpp
   executable.cpp
+  files.cpp
   library.cpp
   main.cpp
   shell.cpp
@@ -18,6 +19,7 @@ PUBLIC FILE_SET HEADERS FILES
   buildxx/buildxx.hpp
   buildxx/entry.hpp
   buildxx/executable.hpp
+  buildxx/files.hpp
   buildxx/library.hpp
   buildxx/option.hpp
   buildxx/shell.hpp
@@ -39,6 +41,7 @@ PRIVATE
 
 add_custom_command(
 OUTPUT headers.tar
+DEPENDS libbuildxx
 COMMENT "Archiving headers"
 COMMAND ${TAR} -cf headers.tar
   --transform='s|.*buildxx/||'

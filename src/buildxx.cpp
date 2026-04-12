@@ -10,7 +10,7 @@ const char buildxx_a[] = {
 #embed BUNDLE
 };
 
-const char headers_tar[] {
+const char headers_tar[]{
 #embed HEADERS
 };
 
@@ -20,9 +20,9 @@ void extract_library(const buildxx::path& out) {
   file.write(buildxx_a, sizeof(buildxx_a));
 }
 
-#define AR_ERROR(ar, ret) \
-  if ((ret) != ARCHIVE_OK) \
-    throw error(fmt::format("libarchive: {}", archive_error_string((ar))))
+#define AR_ERROR(ar, ret)                                                      \
+  if ((ret) != ARCHIVE_OK)                                                     \
+  throw error(fmt::format("libarchive: {}", archive_error_string((ar))))
 
 void extract_headers(const buildxx::path& out) {
   using namespace buildxx;
@@ -38,13 +38,15 @@ void extract_headers(const buildxx::path& out) {
     // 2. loop over files
     struct archive_entry* entry{};
     auto ret = archive_read_next_header(ar, &entry);
-    if (ret == ARCHIVE_EOF) break;
+    if (ret == ARCHIVE_EOF)
+      break;
     AR_ERROR(ar, ret);
 
     // 3. get filename and size
     auto pathname = archive_entry_pathname(entry);
     auto size = archive_entry_size(entry);
-    if (size == 0) continue;
+    if (size == 0)
+      continue;
 
     // 4. read file content
     std::string buff;

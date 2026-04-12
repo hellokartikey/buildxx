@@ -4,6 +4,7 @@
 #include "build_ctx.hpp"
 #include "entry.hpp"
 #include "executable.hpp"
+#include "files.hpp"
 #include "library.hpp"
 #include "option.hpp"
 #include "shell.hpp"

@@ -5,9 +5,7 @@
 namespace buildxx {
 namespace env = boost::process::environment;
 
-path find_executable(const string& name) {
-  return env::find_executable(name);
-}
+path find_executable(const string& name) { return env::find_executable(name); }
 
 bool create_if_not_exist(const path& p) {
   if (fs::is_directory(p)) {
@@ -16,4 +14,4 @@ bool create_if_not_exist(const path& p) {
 
   return fs::create_directories(p);
 }
-}
+} // namespace buildxx
