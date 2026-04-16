@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 4.0)
 project(buildxx VERSION 0.2)
 
 option(CLANG_FORMAT "enable clang-format" ON)
-option(BUILDXX_STATIC "enable fully static binary" ON)
+option(BUILDXX_STATIC "enable fully static binary" OFF)
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
