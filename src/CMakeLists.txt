@@ -20,7 +20,7 @@ PRIVATE
   spdlog::spdlog
 )
 
-target_link_libraries(buildxx PRIVATE libbuildxx)
+target_link_libraries(buildxx PRIVATE libbuildxx fmt::fmt)
 
 if(BUILDXX_STATIC)
   target_link_libraries(buildxx PRIVATE archive_static "-static")
