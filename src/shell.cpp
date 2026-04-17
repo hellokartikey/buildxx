@@ -1,4 +1,4 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/shell.hpp"
 
 #include <chrono>
 #include <thread>
@@ -11,6 +11,8 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
+
+#include "buildxx/utils.hpp"
 
 namespace buildxx {
 namespace asio = boost::asio;

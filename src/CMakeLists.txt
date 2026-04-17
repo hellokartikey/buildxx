@@ -1,5 +1,6 @@
 target_sources(libbuildxx
 PRIVATE
+  async_rc.cpp
   build_ctx.cpp
   executable.cpp
   files.cpp

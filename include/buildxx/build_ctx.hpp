@@ -4,11 +4,12 @@
 #include <concepts>
 
 #include "option.hpp"
-#include "shell.hpp"
-#include "target.hpp"
 #include "types.hpp"
 
 namespace buildxx {
+class shell;
+class target;
+
 class build_ctx {
 public:
   build_ctx(int argc, char** argv, string script);

@@ -1,8 +1,10 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/toolchain.hpp"
 
 #include <ranges>
 
 #include <spdlog/spdlog.h>
+
+#include "buildxx/library.hpp"
 
 namespace buildxx {
 toolchain::toolchain()

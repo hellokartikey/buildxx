@@ -7,6 +7,7 @@
 #include "files.hpp"
 #include "library.hpp"
 #include "option.hpp"
+#include "async_rc.hpp"
 #include "shell.hpp"
 #include "target.hpp"
 #include "toolchain.hpp"

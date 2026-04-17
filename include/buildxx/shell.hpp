@@ -3,6 +3,7 @@
 
 #include <mutex>
 
+#include "async_rc.hpp"
 #include "types.hpp"
 
 namespace buildxx {

@@ -1,6 +1,9 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/build_ctx.hpp"
 
 #include <spdlog/spdlog.h>
+
+#include "buildxx/shell.hpp"
+#include "buildxx/target.hpp"
 
 namespace buildxx {
 build_ctx::build_ctx(int argc, char** argv, string script)

@@ -1,8 +1,11 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/library.hpp"
 
 #include <ranges>
 
 #include <fmt/format.h>
+
+#include "buildxx/build_ctx.hpp"
+#include "buildxx/shell.hpp"
 
 namespace buildxx {
 library::library(build_ctx& ctx, const string& name)

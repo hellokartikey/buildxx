@@ -1,4 +1,4 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/buildxx.hpp"
 
 #include <CLI/CLI.hpp>
 #include <boost/cobalt/main.hpp>

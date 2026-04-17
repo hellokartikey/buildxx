@@ -1,8 +1,11 @@
-#include <buildxx/buildxx.hpp>
+#include "buildxx/executable.hpp"
 
 #include <ranges>
 
 #include <spdlog/spdlog.h>
+
+#include "buildxx/build_ctx.hpp"
+#include "buildxx/shell.hpp"
 
 namespace buildxx {
 executable::executable(build_ctx& ctx, const string& name)

@@ -1,5 +1,6 @@
 target_sources(libbuildxx
 PUBLIC FILE_SET HEADERS FILES
+  buildxx/async_rc.hpp
   buildxx/build_ctx.hpp
   buildxx/buildxx.hpp
   buildxx/entry.hpp
