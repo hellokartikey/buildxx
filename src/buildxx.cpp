@@ -64,7 +64,7 @@ void extract_headers(const buildxx::path& out) {
 
 #endif
 
-void buildxx::build(build_ctx& ctx) {
+void buildxx::buildxx() {
 #ifdef BUILDXX_STATIC
   path library_path = ctx.tmp() / path(BUNDLE).filename();
   path include_path = ctx.tmp() / "include" / "buildxx";
@@ -73,8 +73,9 @@ void buildxx::build(build_ctx& ctx) {
   extract_headers(include_path);
 #endif
 
-  auto& build_exe = ctx.add<executable>("buildxx")
-                        .file(ctx.build_script())
+  auto& build_exe = build()
+                        .add<executable>("buildxx")
+                        .file(build().build_script())
                         .std(23)
 #ifdef BUILDXX_STATIC
                         .link(library_path)
@@ -82,9 +83,9 @@ void buildxx::build(build_ctx& ctx) {
 #else
                         .ld_flag("-lbuildxx")
 #endif
-                        .out_file(ctx.tmp() / "buildxx")
-                        .build();
+                        .out_file(build().tmp() / "buildxx")
+                        .install();
 
-  vector<string> argv(ctx.argv(), ctx.argv() + ctx.argc());
-  ctx.build_step().depends_on(build_exe.run_step().flags(argv));
+  vector<string> argv(cli().argv(), cli().argv() + cli().argc());
+  build().build_step().depends_on(build_exe.run_step().flags(argv));
 }

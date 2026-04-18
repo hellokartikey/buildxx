@@ -10,10 +10,15 @@ namespace buildxx {
 class shell;
 class target;
 
+class build_ctx;
+build_ctx& build();
+
 class build_ctx {
-public:
-  build_ctx(int argc, char** argv, string script);
+  build_ctx();
   ~build_ctx() = default;
+
+public:
+  friend build_ctx& build();
 
   path root() const;
   path dir(string dir) const;
@@ -24,7 +29,7 @@ public:
   path tmp() const;
 
   template <std::derived_from<target> T> T& add(const string& name) {
-    auto* ptr = new T(*this, name);
+    auto* ptr = new T(name);
     m_targets.emplace_back(ptr);
     return *ptr;
   }
@@ -32,8 +37,6 @@ public:
   shell& step();
   shell& build_step();
 
-  int argc() const;
-  char** argv() const;
   const string& build_script() const;
 
   template <typename T> option<T> config(string name, string description);
@@ -53,8 +56,6 @@ private:
 
   bool m_steps_created = false;
 
-  int m_argc = 0;
-  char** m_argv = nullptr;
   string m_script;
 };
 } // namespace buildxx

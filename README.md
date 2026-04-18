@@ -15,23 +15,25 @@ Buildxx doesn't opine on any project structure. Here is a simple example.
 └── build.cpp
 ```
 
-The build script is a C++ file, which describes the build graph.
+The `build.cpp` describes the build graph.
 
 ```C++
 #include <buildxx/buildxx.hpp>
 
-void buildxx::build(build_ctx& ctx) {
-  auto src = ctx.dir("src");
+void buildxx::buildxx() {
+  auto src = build().dir("src");
 
-  auto foo = ctx.add<library>("foo")
+  auto foo = build()
+    .add<library>("foo")
     .shared(true)
     .file(src / "foo.cpp");
 
-  auto main = ctx.add<executable>("main")
+  auto main = build()
+    .add<executable>("main")
     .std(23)
     .file(src / "main.cpp")
     .link(foo)
-    .build();
+    .install();
 }
 ```
 

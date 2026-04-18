@@ -8,18 +8,18 @@
 #include "buildxx/shell.hpp"
 
 namespace buildxx {
-library::library(build_ctx& ctx, const string& name)
-    : target(ctx, name)
+library::library(const string& name)
+    : target(name)
     , toolchain()
-    , m_out_file(ctx.lib() / fmt::format("lib{}.a", name)) {}
+    , m_out_file(build().lib() / fmt::format("lib{}.a", name)) {}
 
 library& library::shared(bool value) {
   toolchain::shared(value);
 
   if (toolchain::shared()) {
-    m_out_file = ctx().lib() / fmt::format("lib{}.so", name());
+    m_out_file = build().lib() / fmt::format("lib{}.so", name());
   } else {
-    m_out_file = ctx().lib() / fmt::format("lib{}.a", name());
+    m_out_file = build().lib() / fmt::format("lib{}.a", name());
   }
 
   return *this;
@@ -36,8 +36,8 @@ library& library::build_steps() {
   namespace views = std::views;
   namespace ranges = std::ranges;
 
-  auto to_object = [this](auto p) {
-    return this->ctx().tmp() / p.relative_path().concat(".o");
+  auto to_object = [](auto p) {
+    return build().tmp() / p.relative_path().concat(".o");
   };
 
   auto tc_flags = build_flags();
@@ -47,7 +47,7 @@ library& library::build_steps() {
 
   for (auto [in, out] : views::zip(files(), objects)) {
     auto& object_step =
-        ctx()
+        build()
             .step()
             .bin(c_lang() ? cc() : cxx())
             .flags(tc_flags)

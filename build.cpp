@@ -1,18 +1,22 @@
 #include <buildxx/buildxx.hpp>
 
 // clang-format off
-void buildxx::build(build_ctx& ctx) {
-  auto test_dir = ctx.dir("test");
+void buildxx::buildxx() {
+  auto test_dir = build().dir("test");
 
-  auto foo_srcs = prefix(ctx.dir("test"), { "foo.cc", "bar.cc" });
-  auto& foo = ctx.add<library>("foo")
+  auto foo_srcs = prefix(build().dir("test"), { "foo.cc", "bar.cc" });
+  auto& foo = build()
+    .add<library>("foo")
     .shared(true)
-    .files(foo_srcs);
+    .files(foo_srcs)
+    ;
 
-  auto& exe = ctx.add<executable>("test")
+  auto& exe = build()
+    .add<executable>("test")
     .file(test_dir / "main.cc")
     .link(foo)
     .include(test_dir)
-    .build();
+    .install()
+    ;
 }
 // clang-format on

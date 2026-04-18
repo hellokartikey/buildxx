@@ -6,7 +6,7 @@
 namespace buildxx {
 class executable : public target, public toolchain {
 public:
-  executable(build_ctx& ctx, const string& name);
+  executable(const string& name);
   ~executable() override = default;
 
   executable& out_file(const path& file) override;

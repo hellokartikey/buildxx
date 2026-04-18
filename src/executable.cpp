@@ -8,10 +8,10 @@
 #include "buildxx/shell.hpp"
 
 namespace buildxx {
-executable::executable(build_ctx& ctx, const string& name)
-    : target(ctx, name)
+executable::executable(const string& name)
+    : target(name)
     , toolchain()
-    , m_out_file(ctx.bin() / name) {}
+    , m_out_file(build().bin() / name) {}
 
 executable& executable::out_file(const path& file) {
   m_out_file = file;
@@ -24,8 +24,8 @@ executable& executable::build_steps() {
   namespace views = std::views;
   namespace ranges = std::ranges;
 
-  auto to_object = [this](auto p) {
-    return this->ctx().tmp() / p.relative_path().concat(".o");
+  auto to_object = [](auto p) {
+    return build().tmp() / p.relative_path().concat(".o");
   };
 
   vector<path> objects =
@@ -35,7 +35,7 @@ executable& executable::build_steps() {
 
   for (auto [in, out] : views::zip(files(), objects)) {
     auto& object_step =
-        ctx()
+        build()
             .step()
             .bin(c_lang() ? cc() : cxx())
             .flags(tc_flags)
@@ -62,7 +62,7 @@ executable& executable::build_steps() {
 }
 
 shell& executable::run_step() {
-  return ctx()
+  return build()
       .step()
       .bin(out_file())
       .depends_on(final_step())

@@ -2,6 +2,7 @@ target_sources(libbuildxx
 PRIVATE
   async_rc.cpp
   build_ctx.cpp
+  cli_ctx.cpp
   executable.cpp
   files.cpp
   library.cpp

@@ -1,16 +1,17 @@
 #ifndef BUILDXX_TARGET_HPP
 #define BUILDXX_TARGET_HPP
 
+#include "build_ctx.hpp"
+#include "shell.hpp"
 #include "toolchain.hpp"
 
 namespace buildxx {
-class build_ctx;
 class library;
 class shell;
 
 class target {
 public:
-  target(build_ctx& ctx, const string& name);
+  target(const string& name);
   virtual ~target() = default;
 
   const string& name() const;
@@ -32,8 +33,8 @@ public:
     return self;
   }
 
-  auto& build(this auto& self) {
-    self.ctx().build_step().depends_on(self.final_step());
+  auto& install(this auto& self) {
+    build().build_step().depends_on(self.final_step());
     return self;
   }
 
@@ -45,13 +46,7 @@ public:
 
   virtual target& build_steps() = 0;
 
-protected:
-  build_ctx& ctx();
-  const build_ctx& ctx() const;
-
 private:
-  build_ctx* m_ctx;
-
   string m_name;
   vector<path> m_files;
 

@@ -6,7 +6,7 @@
 namespace buildxx {
 class library : public target, public toolchain {
 public:
-  library(build_ctx& ctx, const string& name);
+  library(const string& name);
   ~library() override = default;
 
   library& shared(bool value);

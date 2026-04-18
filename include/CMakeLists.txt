@@ -3,6 +3,7 @@ PUBLIC FILE_SET HEADERS FILES
   buildxx/async_rc.hpp
   buildxx/build_ctx.hpp
   buildxx/buildxx.hpp
+  buildxx/cli_ctx.hpp
   buildxx/entry.hpp
   buildxx/executable.hpp
   buildxx/files.hpp

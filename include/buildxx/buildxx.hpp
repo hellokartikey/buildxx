@@ -2,6 +2,7 @@
 #define BUILDXX_BUILDXX_HPP
 
 #include "build_ctx.hpp"
+#include "cli_ctx.hpp"
 #include "entry.hpp"
 #include "executable.hpp"
 #include "files.hpp"
